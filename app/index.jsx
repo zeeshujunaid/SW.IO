@@ -56,7 +56,7 @@ export default function Index() {
       >
         <View style={styles.container}>
           <Image
-            source={require("../../assets/images/saylanilogo.png")}
+            source={require("../assets/images/saylanilogo.png")}
             style={styles.logo}
             resizeMode="contain"
           />

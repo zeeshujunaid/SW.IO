@@ -38,8 +38,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View
               style={{
-                width: 85,
-                height: 70,
+                width: 75,
+                height: 60,
                 borderRadius: 40,
                 paddingBottom: 10,
                 borderTopRightRadius: 10,
@@ -81,13 +81,14 @@ export default function TabLayout() {
                 width: 85,
                 height: 70,
                 borderRadius: 40,
+                paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
                 backgroundColor: focused ? "#fff" : "transparent",
                 justifyContent: "center",
-                marginTop: focused ? 0 : 40,
                 alignItems: "center",
-                marginBottom: focused ? -12 : 0, // <-- outer view ko thoda neeche/uppar shift
+                marginTop: focused ? 0 : 40,
+                marginBottom: focused ? -12 : 0, // <-- outer view ko thoda neeche/uppar shiftr shift
               }}
             >
               <View
@@ -118,12 +119,13 @@ export default function TabLayout() {
                 width: 85,
                 height: 70,
                 borderRadius: 40,
+                paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
                 backgroundColor: focused ? "#fff" : "transparent",
                 justifyContent: "center",
-                marginTop: focused ? 0 : 40,
                 alignItems: "center",
+                marginTop: focused ? 0 : 40,
                 marginBottom: focused ? -12 : 0, // <-- outer view ko thoda neeche/uppar shift
               }}
             >
@@ -155,12 +157,13 @@ export default function TabLayout() {
                 width: 85,
                 height: 70,
                 borderRadius: 40,
+                paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
                 backgroundColor: focused ? "#fff" : "transparent",
                 justifyContent: "center",
-                marginTop: focused ? 0 : 40,
                 alignItems: "center",
+                marginTop: focused ? 0 : 40,
                 marginBottom: focused ? -12 : 0, // <-- outer view ko thoda neeche/uppar shift
               }}
             >

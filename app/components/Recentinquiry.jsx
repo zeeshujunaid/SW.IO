@@ -1,9 +1,8 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
-
 export default function Recentinquiry() {
   const cases = [
     {
@@ -24,15 +23,6 @@ export default function Recentinquiry() {
       address: "Block 3, Karachi",
       help: "Food",
     },
-    {
-      caseNumber: "Case #03",
-      code: "003-CH-02",
-      name: "Usman Riaz",
-      date: "29-oct-2025",
-      area: "Clifton",
-      address: "Phase 5, Karachi",
-      help: "Shelter",
-    },
   ];
 
   return (
@@ -46,73 +36,83 @@ export default function Recentinquiry() {
         <View key={item.caseNumber} style={styles.card}>
           <Text style={styles.caseNumber}>{item.caseNumber}</Text>
 
-          <View style={styles.cardBody}>
-            <Row
-              label="Case Code"
-              value={item.code}
-              icon={<FontAwesome name="hashtag" size={16} color="#0071BA" />}
-            />
-            <Row
-              label="Date"
-              value={item.date}
-              icon={
-                <MaterialCommunityIcons
-                  name="calendar-clock"
-                  size={16}
-                  color="#0071BA"
-                />
-              }
-            />
-            <Row
-              label="Name"
-              value={item.name}
-              icon={<Feather name="user" size={16} color="#0071BA" />}
-            />
-            <Row
-              label="Area"
-              value={item.area}
-              icon={<Entypo name="location-pin" size={18} color="#0071BA" />}
-            />
-            <Row
-              label="Address"
-              value={item.address}
-              icon={
-                <MaterialCommunityIcons
-                  name="home-map-marker"
-                  size={18}
-                  color="#0071BA"
-                />
-              }
-            />
-            <Row
-              label="Help"
-              value={item.help}
-              icon={
-                <MaterialCommunityIcons
-                  name="hand-heart"
-                  size={18}
-                  color="#0071BA"
-                />
-              }
-            />
+          {/* Case Code */}
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <FontAwesome name="hashtag" size={16} color="#0071BA" />
+              <Text style={styles.label}>Case Code:</Text>
+            </View>
+            <Text style={styles.value}>{item.code}</Text>
           </View>
+
+          {/* Date */}
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <MaterialCommunityIcons
+                name="calendar-clock"
+                size={16}
+                color="#0071BA"
+              />
+              <Text style={styles.label}>Date:</Text>
+            </View>
+            <Text style={styles.value}>{item.date}</Text>
+          </View>
+
+          {/* Name */}
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <Feather name="user" size={16} color="#0071BA" />
+              <Text style={styles.label}>Name:</Text>
+            </View>
+            <Text style={styles.value}>{item.name}</Text>
+          </View>
+
+          {/* Area */}
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <Entypo name="location-pin" size={18} color="#0071BA" />
+              <Text style={styles.label}>Area:</Text>
+            </View>
+            <Text style={styles.value}>{item.area}</Text>
+          </View>
+
+          {/* Address */}
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <MaterialCommunityIcons
+                name="home-map-marker"
+                size={18}
+                color="#0071BA"
+              />
+              <Text style={styles.label}>Address:</Text>
+            </View>
+            <Text style={styles.value}>{item.address}</Text>
+          </View>
+
+          {/* Help */}
+          <View style={styles.row}>
+            <View style={styles.left}>
+              <MaterialCommunityIcons
+                name="hand-heart"
+                size={18}
+                color="#0071BA"
+              />
+              <Text style={styles.label}>Help:</Text>
+            </View>
+            <Text style={styles.value}>{item.help}</Text>
+          </View>
+
+          {/* Right Side Button */}
+          <TouchableOpacity style={styles.button}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+            >
+              <Feather name="video" size={20} color="#fff" />
+              <Text style={styles.buttonText}>Upload Video</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       ))}
-    </View>
-  );
-}
-
-function Row({ label, value, icon }) {
-  return (
-    <View style={styles.detailRow}>
-      {/* LEFT → icon + label */}
-      <View style={styles.leftSide}>
-        {icon}
-        <Text style={styles.detailLabel}>{label}:</Text>
-      </View>
-
-      {/* RIGHT → value */}
-      <Text style={styles.valueRight}>{value}</Text>
     </View>
   );
 }
@@ -145,31 +145,46 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  cardBody: { gap: 14 },
-
-  detailRow: {
+  row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 10,
     alignItems: "center",
   },
 
-  leftSide: {
+  left: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
     flex: 1,
   },
 
-  detailLabel: {
+  label: {
     fontWeight: "600",
     fontSize: 14,
   },
 
-  valueRight: {
+  value: {
     fontSize: 14,
     fontWeight: "500",
-    textAlign: "right",
-    flex: 1,
     color: "#333",
+    flex: 1,
+    textAlign: "right",
+  },
+
+  button: {
+    marginTop: 10,
+    justifyContent:"space-around",
+    alignSelf: "flex-end",
+    backgroundColor: "#0071BA",
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 8,
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 14,
   },
 });

@@ -80,7 +80,7 @@ export default function Inquirylist() {
             {/* Case Number & Button Row */}
             <View style={styles.caseRow}>
               <Text style={styles.caseNumber}>{item.caseNumber}</Text>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity style={styles.button} onPress={()=>router.push("/common/Inquiryform")}>
                 <Text style={styles.buttonText}>View Details</Text>
               </TouchableOpacity>
             </View>

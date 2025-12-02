@@ -38,17 +38,17 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View
               style={{
-                width: 75,
-                height: 60,
+                width: 85,
+                height: 70,
                 borderRadius: 40,
                 paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
-                backgroundColor: focused ? "#ffffffee" : "transparent",
+                backgroundColor: focused ? "#ffffffe7" : "transparent",
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: focused ? 0 : 40,
-                marginBottom: focused ? -12 : 0, // <-- outer view ko thoda neeche/uppar shift
+                marginBottom: focused ? -12 : 0, // <-- outer view ko thoda neeche/uppar shiftr shift
               }}
             >
               <View
@@ -56,7 +56,9 @@ export default function TabLayout() {
                   width: 60,
                   height: 60,
                   borderRadius: 45,
-                  backgroundColor: focused ? "#0071BA" : "transparent",
+                  backgroundColor: focused
+                    ? "#0071BA" // blue inner circle
+                    : "transparent",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -84,7 +86,7 @@ export default function TabLayout() {
                 paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
-                backgroundColor: focused ? "#fff" : "transparent",
+                backgroundColor: focused ? "#ffffffe7" : "transparent",
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: focused ? 0 : 40,
@@ -122,7 +124,7 @@ export default function TabLayout() {
                 paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
-                backgroundColor: focused ? "#fff" : "transparent",
+                backgroundColor: focused ? "#ffffffe7" : "transparent",
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: focused ? 0 : 40,
@@ -160,7 +162,7 @@ export default function TabLayout() {
                 paddingBottom: 10,
                 borderTopRightRadius: 10,
                 borderTopLeftRadius: 10,
-                backgroundColor: focused ? "#fff" : "transparent",
+                backgroundColor: focused ? "#ffffffe7" : "transparent",
                 justifyContent: "center",
                 alignItems: "center",
                 marginTop: focused ? 0 : 40,

@@ -3,7 +3,10 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
+import { useRouter } from "expo-router";
+
 export default function Recentinquiry() {
+  const router = useRouter();
   const cases = [
     {
       caseNumber: "Case #01",
@@ -29,7 +32,9 @@ export default function Recentinquiry() {
     <View style={styles.container}>
       <View style={styles.heading}>
         <Text style={styles.headingText}>Recent Inquiries</Text>
+        <TouchableOpacity onPress={()=>router.push("/(tabs)/Inquirylist")}>
         <Text style={styles.viewAllText}>View All</Text>
+        </TouchableOpacity>
       </View>
 
       {cases.map((item) => (
@@ -101,16 +106,6 @@ export default function Recentinquiry() {
             </View>
             <Text style={styles.value}>{item.help}</Text>
           </View>
-
-          {/* Right Side Button */}
-          <TouchableOpacity style={styles.button}>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
-            >
-              <Feather name="video" size={20} color="#fff" />
-              <Text style={styles.buttonText}>Upload Video</Text>
-            </View>
-          </TouchableOpacity>
         </View>
       ))}
     </View>
@@ -170,21 +165,5 @@ const styles = StyleSheet.create({
     color: "#333",
     flex: 1,
     textAlign: "right",
-  },
-
-  button: {
-    marginTop: 10,
-    justifyContent:"space-around",
-    alignSelf: "flex-end",
-    backgroundColor: "#0071BA",
-    paddingVertical: 8,
-    paddingHorizontal: 18,
-    borderRadius: 8,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 14,
   },
 });

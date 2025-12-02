@@ -1,0 +1,39 @@
+import { View, Text, TextInput } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+export default function Searchbar() {
+  return (
+    <View
+      style={{
+        paddingTop: 10,
+        paddingHorizontal: 20,
+        paddingBottom: 25,
+      }}
+    >
+      {/* Search Bar */}
+      <View
+        style={{
+          width: "100%",
+          height: 50,
+          flexDirection: "row",
+          alignItems: "center",
+          borderColor:"#border: 1px solid rgba(0, 0, 0, 0.12)",
+          borderWidth:1,
+          paddingHorizontal: 12,
+          borderRadius: 10,
+        }}
+      >
+        <Ionicons name="search" size={20} color="#777" />
+        <TextInput
+          placeholder="Search..."
+          style={{
+            flex: 1,
+            fontSize: 16,
+            marginLeft: 10,
+          }}
+          placeholderTextColor="#777"
+        />
+      </View>
+    </View>
+  );
+}

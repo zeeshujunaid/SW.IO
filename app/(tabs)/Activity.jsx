@@ -196,7 +196,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#0071BA",
+    color: "#000",
+    paddingLeft:10,
   },
 
   caseRow: {

@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#000",
-    paddingLeft:20,
+    paddingLeft:10,
   },
 
   caseRow: {

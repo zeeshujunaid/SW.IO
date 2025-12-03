@@ -1,7 +1,46 @@
-import { Text, View, Image, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+} from "react-native";
+import { useState, useEffect } from "react";
 import Feather from "@expo/vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { baseurl } from "../../services/config";
 
 export default function Herosection() {
+  const [stats, setStats] = useState({ active: 0, approved: 0, pendings: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (!token) throw new Error("Token not found");
+
+        const response = await fetch(`${baseurl}/api/dashboard/stats`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch stats");
+
+        const data = await response.json();
+        if (data.success && data.stats) {
+          setStats({
+            active: data.stats.active,
+            approved: data.stats.approved,
+            pendings: data.stats.pendings,
+          });
+          console.log("Stats fetched:", data.stats);
+        }
+      } catch (err) {
+        console.log("Error fetching stats:", err);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Top Card */}
@@ -13,7 +52,7 @@ export default function Herosection() {
           <Text style={styles.topCardTitle}>Total Inquire</Text>
         </View>
 
-        <Text style={styles.topCardNumber}>100</Text>
+        <Text style={styles.topCardNumber}>{stats.active}</Text>
 
         <View style={styles.topCardFooter}>
           <Text style={styles.topCardPercentage}>+24%</Text>
@@ -32,7 +71,7 @@ export default function Herosection() {
             <Text style={styles.bottomCardTitle}>Completed</Text>
           </View>
 
-          <Text style={styles.bottomCardNumber}>100</Text>
+          <Text style={styles.bottomCardNumber}>{stats.approved}</Text>
 
           <View style={styles.bottomCardFooter}>
             <Text style={styles.bottomCardPercentage}>+24%</Text>
@@ -50,7 +89,7 @@ export default function Herosection() {
             <Text style={styles.bottomCardTitle}>Pending</Text>
           </View>
 
-          <Text style={styles.bottomCardNumber}>25%</Text>
+          <Text style={styles.bottomCardNumber}>{stats.pendings}</Text>
 
           <View style={styles.bottomCardFooter}>
             <Text style={styles.pendingPercentage}>+24%</Text>

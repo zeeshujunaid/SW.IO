@@ -4,37 +4,23 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
+import { useContext } from "react";
+import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Recentinquiry({ searchText }) {
   const router = useRouter();
-  const cases = [
-    {
-      caseNumber: "Case #01",
-      code: "001-CH-00",
-      name: "Ali Khan",
-      date: "29-oct-2025",
-      area: "Gulshan",
-      address: "Street 12, Karachi",
-      help: "Medical",
-    },
-    {
-      caseNumber: "Case #02",
-      code: "002-CH-01",
-      name: "Sara Ahmed",
-      date: "29-oct-2025",
-      area: "Korangi",
-      address: "Block 3, Karachi",
-      help: "Food",
-    },
-  ];
+  const { inquiries } = useContext(InquiryContext);
 
-  // Filter cases based on searchText (name, area, or help)
+
+  const cases = (inquiries || []).slice(0, 3);
+
+
   const filteredCases = cases.filter((item) => {
     const lower = searchText.toLowerCase();
     return (
-      item.name.toLowerCase().includes(lower) ||
-      item.area.toLowerCase().includes(lower) ||
-      item.help.toLowerCase().includes(lower)
+      (item.caseId.inquiryPersonName || "").toLowerCase().includes(lower) ||
+      (item.caseId.area || "").toLowerCase().includes(lower) ||
+      (item.caseId.help || "").toLowerCase().includes(lower)
     );
   });
 
@@ -47,16 +33,18 @@ export default function Recentinquiry({ searchText }) {
         </TouchableOpacity>
       </View>
 
-      {filteredCases.map((item) => (
-        <View key={item.caseNumber} style={styles.card}>
-          <Text style={styles.caseNumber}>{item.caseNumber}</Text>
+      {filteredCases.map((item, index) => (
+        <View key={item._id} style={styles.card}>
+          <Text style={styles.caseNumber}>
+            Case #{(index + 1).toString().padStart(2, "0")}
+          </Text>
 
           <View style={styles.row}>
             <View style={styles.left}>
               <FontAwesome name="hashtag" size={16} color="#0071BA" />
-              <Text style={styles.label}>Case Code:</Text>
+              <Text style={styles.label}>Case Number:</Text>
             </View>
-            <Text style={styles.value}>{item.code}</Text>
+            <Text style={styles.value}>{item.caseId.caseNo}</Text>
           </View>
 
           <View style={styles.row}>
@@ -68,15 +56,19 @@ export default function Recentinquiry({ searchText }) {
               />
               <Text style={styles.label}>Date:</Text>
             </View>
-            <Text style={styles.value}>{item.date}</Text>
+            <Text style={styles.value}>
+              {new Date(item.caseId.createdAt).toLocaleDateString()}
+            </Text>
           </View>
 
           <View style={styles.row}>
             <View style={styles.left}>
               <Feather name="user" size={16} color="#0071BA" />
-              <Text style={styles.label}>Name:</Text>
+              <Text style={styles.label}>Saail Name:</Text>
             </View>
-            <Text style={styles.value}>{item.name}</Text>
+            <Text style={styles.value}>
+              {item.caseId?.saailId?.name || "-"}
+            </Text>
           </View>
 
           <View style={styles.row}>
@@ -84,7 +76,9 @@ export default function Recentinquiry({ searchText }) {
               <Entypo name="location-pin" size={18} color="#0071BA" />
               <Text style={styles.label}>Area:</Text>
             </View>
-            <Text style={styles.value}>{item.area}</Text>
+            <Text style={styles.value}>
+              {item.caseId?.saailId?.area || "-"}
+            </Text>
           </View>
 
           <View style={styles.row}>
@@ -96,7 +90,9 @@ export default function Recentinquiry({ searchText }) {
               />
               <Text style={styles.label}>Address:</Text>
             </View>
-            <Text style={styles.value}>{item.address}</Text>
+            <Text style={styles.value}>
+              {item.caseId?.saailId?.address || "-"}
+            </Text>
           </View>
 
           <View style={styles.row}>
@@ -108,7 +104,9 @@ export default function Recentinquiry({ searchText }) {
               />
               <Text style={styles.label}>Help:</Text>
             </View>
-            <Text style={styles.value}>{item.help}</Text>
+            <Text style={styles.value}>
+              {item.caseId?.saailId?.helpFor || "-"}
+            </Text>
           </View>
         </View>
       ))}

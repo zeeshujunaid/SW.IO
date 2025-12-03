@@ -58,7 +58,7 @@ export default function Index() {
 
       const data = await response.json();
       console.log(data);
-
+      await AsyncStorage.setItem("userdata", JSON.stringify(data));
       if (!response.ok) {
         Toast.show({
           type: "error",

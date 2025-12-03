@@ -7,62 +7,73 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Profile() {
+  const [userdata, setUserdata] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const value = await AsyncStorage.getItem("userdata");
+        if (value !== null) {
+          setUserdata(JSON.parse(value)); 
+          console.log(JSON.parse(value));
+        }
+      } catch (e) {
+        console.log("Error reading userdata from AsyncStorage", e);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
-      {/* Background Image */}
       <Image
         source={require("../../assets/images/profilebg.png")}
         style={styles.bgImage}
         resizeMode="cover"
       />
 
-      {/* Profile Image */}
       <Image
         source={require("../../assets/images/saillnew.png")}
         style={styles.profileImage}
         resizeMode="contain"
       />
 
-      {/* Edit Profile Button */}
       <TouchableOpacity
         style={styles.editButton}
-        onPress={() => router.push("/common/Editprofile")}
+        onPress={() =>
+          router.push({
+            pathname: "/common/Editprofile",
+            params: { user: JSON.stringify(userdata?.data?.user) }, 
+          })
+        }
       >
         <Text style={styles.editButtonText}>Edit Profile</Text>
       </TouchableOpacity>
 
-      {/* Profile Details */}
       <View style={styles.detailsContainer}>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Name:</Text>
-          <Text style={styles.value}>Syed Ateeb Ul Hassan</Text>
+          <Text style={styles.value}>{userdata?.data?.user?.userName}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.label}>Email:</Text>
-          <Text style={styles.value}>syedateebulhassan@123gmail.com</Text>
+          <Text style={styles.value}>{userdata?.data?.user?.email}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.label}>CNIC:</Text>
-          <Text style={styles.value}>42101-6521546-3</Text>
-        </View>
-
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Country:</Text>
-          <Text style={styles.value}>Pakistan</Text>
-        </View>
-
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>City:</Text>
-          <Text style={styles.value}>Karachi</Text>
+          <Text style={styles.value}>{userdata?.data?.user?.cnicNo}</Text>
         </View>
 
         <View style={styles.detailRow}>
           <Text style={styles.label}>Address:</Text>
-          <Text style={styles.value}>FA 63/8 Federal Capital Area Karachi</Text>
+          <Text style={styles.value}>{userdata?.data?.user?.address}</Text>
         </View>
       </View>
     </ScrollView>

@@ -12,37 +12,41 @@ import {
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
+
 export default function Index() {
   const router = useRouter();
-  const [cnic, setCnic] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handellogin = () => {
-    if (!cnic || cnic.length !== 13 || !/^[0-9]+$/.test(cnic)) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRegex.test(email)) {
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Please enter a valid 13-digit CNIC number",
+        text2: "Please enter a valid email address",
       });
-      setCnic("");
-      setError("cnic");
-      return;
-    }
-    if (!phone || phone.length !== 11 || !/^[0-9]+$/.test(phone)) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Please enter a valid 11-digit phone number",
-      });
-      setPhone("");
-      setError("phone");
+      setEmail("");
+      setError("email");
       return;
     }
 
-    router.replace("/auth/Registrationform");
-    setCnic("");
-    setPhone("");
+    if (!password || password.length < 6) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Password must be at least 6 characters",
+      });
+      setPassword("");
+      setError("password");
+      return;
+    }
+
+    router.replace("/(tabs)/Homescreen");
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -69,62 +73,45 @@ export default function Index() {
           </View>
 
           <View style={styles.form}>
-            <Text style={styles.label}>CNIC Number</Text>
-
+            {/* Email */}
+            <Text style={styles.label}>Email Address</Text>
             <View style={styles.inputContainer}>
               <TextInput
-                value={cnic}
-                onChangeText={(text) => setCnic(text)}
-                placeholder="422101-1234567-1"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="example@gmail.com"
                 placeholderTextColor="#909090"
                 style={styles.input}
-                keyboardType="number-pad"
+                keyboardType="email-address"
               />
             </View>
 
-            <Text style={styles.label}>Phone Number</Text>
-
+            {/* Password */}
+            <Text style={styles.label}>Password</Text>
             <View style={styles.inputContainer}>
               <TextInput
-                value={phone}
-                onChangeText={(text) => setPhone(text)}
-                placeholder="0300-1234567"
+                value={password}
+                onChangeText={setPassword}
+                placeholder="********"
                 placeholderTextColor="#909090"
                 style={styles.input}
-                keyboardType="number-pad"
+                secureTextEntry
               />
             </View>
 
-            {error === "cnic" && (
-              <View
-                style={{
-                  height: 50,
-                  width: "100%",
-                  borderRadius: 10,
-                  backgroundColor: "#FEF2F2",
-                  justifyContent: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <Text style={{ color: "#EF4444", paddingLeft: 10 }}>
-                  Please enter a valid 13-digit CNIC number
+            {/* Error UI */}
+            {error === "email" && (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>
+                  Please enter a valid email address
                 </Text>
               </View>
             )}
 
-            {error === "phone" && (
-              <View
-                style={{
-                  height: 50,
-                  width: "100%",
-                  borderRadius: 10,
-                  backgroundColor: "#FEF2F2",
-                  justifyContent: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <Text style={{ color: "#EF4444", paddingLeft: 10 }}>
-                  Please enter a valid 11-digit phone number
+            {error === "password" && (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>
+                  Password must be at least 6 characters
                 </Text>
               </View>
             )}
@@ -205,18 +192,30 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     backgroundColor: "#ffffffad",
   },
+  input: {
+    flex: 1,
+    color: "#000",
+    fontSize: 15,
+    marginLeft: 10,
+  },
+  errorBox: {
+    height: 50,
+    width: "100%",
+    borderRadius: 10,
+    backgroundColor: "#FEF2F2",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  errorText: {
+    color: "#EF4444",
+    paddingLeft: 10,
+  },
   button: {
     marginTop: 30,
     backgroundColor: "#89C441",
     paddingVertical: 15,
     borderRadius: 15,
     alignItems: "center",
-  },
-  input: {
-    flex: 1,
-    color: "#000",
-    fontSize: 15,
-    marginLeft: 10,
   },
   bottomText: {
     textAlign: "center",

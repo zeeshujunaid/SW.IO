@@ -1,9 +1,11 @@
+import { useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -11,10 +13,12 @@ import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import Header from "../components/Header";
-import SearchBar from "../components/Search";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Inquirylist() {
   const router = useRouter();
+  const [searchText, setSearchText] = useState("");
+
   const cases = [
     {
       caseNumber: "Case #01",
@@ -34,20 +38,18 @@ export default function Inquirylist() {
       address: "Block 3, Karachi",
       help: "Food",
     },
-
     {
       caseNumber: "Case #03",
-      code: "002-CH-01",
+      code: "002-CH-02",
       name: "Sara Ahmed",
       date: "29-oct-2025",
       area: "Korangi",
       address: "Block 3, Karachi",
       help: "Food",
     },
-
     {
       caseNumber: "Case #04",
-      code: "002-CH-01",
+      code: "002-CH-03",
       name: "Sara Ahmed",
       date: "29-oct-2025",
       area: "Korangi",
@@ -56,7 +58,7 @@ export default function Inquirylist() {
     },
     {
       caseNumber: "Case #05",
-      code: "002-CH-01",
+      code: "002-CH-04",
       name: "Sara Ahmed",
       date: "29-oct-2025",
       area: "Korangi",
@@ -65,6 +67,16 @@ export default function Inquirylist() {
     },
   ];
 
+  // Filter cases based on search text (name, area, help)
+  const filteredCases = cases.filter((item) => {
+    const lower = searchText.toLowerCase();
+    return (
+      item.name.toLowerCase().includes(lower) ||
+      item.area.toLowerCase().includes(lower) ||
+      item.help.toLowerCase().includes(lower)
+    );
+  });
+
   return (
     <View style={styles.container}>
       <Header />
@@ -72,15 +84,29 @@ export default function Inquirylist() {
       <ScrollView contentContainerStyle={{ paddingBottom: 90 }}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Enquiries List</Text>
-          <SearchBar />
+
+          {/* Search Bar */}
+          <View style={styles.searchWrapper}>
+            <Ionicons name="search" size={20} color="#777" />
+            <TextInput
+              placeholder="Search..."
+              placeholderTextColor="#777"
+              style={styles.searchInput}
+              value={searchText}
+              onChangeText={setSearchText}
+            />
+          </View>
         </View>
 
-        {cases.map((item) => (
+        {/* Filtered Cases */}
+        {filteredCases.map((item) => (
           <View key={item.caseNumber} style={styles.card}>
-            {/* Case Number & Button Row */}
             <View style={styles.caseRow}>
               <Text style={styles.caseNumber}>{item.caseNumber}</Text>
-              <TouchableOpacity style={styles.button} onPress={()=>router.push("/common/Inquiryform")}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => router.push("/common/Inquiryform")}
+              >
                 <Text style={styles.buttonText}>View Details</Text>
               </TouchableOpacity>
             </View>
@@ -164,26 +190,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-
-  headerContainer: {
-    marginVertical: 10,
-    gap: 10, 
-  },
-
+  headerContainer: { marginVertical: 10, gap: 10 },
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#000",
-    paddingLeft:10,
+    paddingLeft: 10,
   },
-
+  searchWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.12)",
+    borderRadius: 10,
+    height: 50,
+    paddingHorizontal: 12,
+  },
+  searchInput: { flex: 1, marginLeft: 10, fontSize: 16, color: "#000" },
   caseRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
   },
-
   card: {
     borderColor: "#00000020",
     borderWidth: 1,
@@ -192,31 +221,15 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#fff",
   },
-
-  caseNumber: {
-    fontWeight: "800",
-    fontSize: 18,
-  },
-
+  caseNumber: { fontWeight: "800", fontSize: 18 },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
     alignItems: "center",
   },
-
-  left: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    flex: 1,
-  },
-
-  label: {
-    fontWeight: "600",
-    fontSize: 14,
-  },
-
+  left: { flexDirection: "row", alignItems: "center", gap: 6, flex: 1 },
+  label: { fontWeight: "600", fontSize: 14 },
   value: {
     fontSize: 14,
     fontWeight: "500",
@@ -224,17 +237,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "right",
   },
-
   button: {
     backgroundColor: "#0071BA",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
-
-  buttonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 14,
-  },
+  buttonText: { color: "#fff", fontWeight: "700", fontSize: 14 },
 });

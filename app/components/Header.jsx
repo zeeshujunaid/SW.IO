@@ -21,7 +21,7 @@ export default function Header() {
         </View>
 
         {/* Profile */}
-        <TouchableOpacity onPress={() => router.push("/src/common/Profile")}>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/Profile")}>
           <Image
             source={require("../../assets/images/saillnew.png")}
             style={styles.profileImage}

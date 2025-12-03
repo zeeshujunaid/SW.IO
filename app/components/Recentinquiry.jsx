@@ -5,7 +5,7 @@ import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 
-export default function Recentinquiry() {
+export default function Recentinquiry({ searchText }) {
   const router = useRouter();
   const cases = [
     {
@@ -28,20 +28,29 @@ export default function Recentinquiry() {
     },
   ];
 
+  // Filter cases based on searchText (name, area, or help)
+  const filteredCases = cases.filter((item) => {
+    const lower = searchText.toLowerCase();
+    return (
+      item.name.toLowerCase().includes(lower) ||
+      item.area.toLowerCase().includes(lower) ||
+      item.help.toLowerCase().includes(lower)
+    );
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.heading}>
         <Text style={styles.headingText}>Recent Inquiries</Text>
-        <TouchableOpacity onPress={()=>router.push("/(tabs)/Inquirylist")}>
-        <Text style={styles.viewAllText}>View All</Text>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/Inquirylist")}>
+          <Text style={styles.viewAllText}>View All</Text>
         </TouchableOpacity>
       </View>
 
-      {cases.map((item) => (
+      {filteredCases.map((item) => (
         <View key={item.caseNumber} style={styles.card}>
           <Text style={styles.caseNumber}>{item.caseNumber}</Text>
 
-          {/* Case Code */}
           <View style={styles.row}>
             <View style={styles.left}>
               <FontAwesome name="hashtag" size={16} color="#0071BA" />
@@ -50,7 +59,6 @@ export default function Recentinquiry() {
             <Text style={styles.value}>{item.code}</Text>
           </View>
 
-          {/* Date */}
           <View style={styles.row}>
             <View style={styles.left}>
               <MaterialCommunityIcons
@@ -63,7 +71,6 @@ export default function Recentinquiry() {
             <Text style={styles.value}>{item.date}</Text>
           </View>
 
-          {/* Name */}
           <View style={styles.row}>
             <View style={styles.left}>
               <Feather name="user" size={16} color="#0071BA" />
@@ -72,7 +79,6 @@ export default function Recentinquiry() {
             <Text style={styles.value}>{item.name}</Text>
           </View>
 
-          {/* Area */}
           <View style={styles.row}>
             <View style={styles.left}>
               <Entypo name="location-pin" size={18} color="#0071BA" />
@@ -81,7 +87,6 @@ export default function Recentinquiry() {
             <Text style={styles.value}>{item.area}</Text>
           </View>
 
-          {/* Address */}
           <View style={styles.row}>
             <View style={styles.left}>
               <MaterialCommunityIcons
@@ -94,7 +99,6 @@ export default function Recentinquiry() {
             <Text style={styles.value}>{item.address}</Text>
           </View>
 
-          {/* Help */}
           <View style={styles.row}>
             <View style={styles.left}>
               <MaterialCommunityIcons
@@ -114,7 +118,6 @@ export default function Recentinquiry() {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 12, paddingTop: 15 },
-
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -124,7 +127,6 @@ const styles = StyleSheet.create({
   },
   headingText: { fontSize: 18, fontWeight: "bold" },
   viewAllText: { fontSize: 14, fontWeight: "600", color: "#0071BA" },
-
   card: {
     borderColor: "#00000020",
     borderWidth: 1,
@@ -133,32 +135,15 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#fff",
   },
-
-  caseNumber: {
-    fontWeight: "800",
-    fontSize: 18,
-    marginBottom: 10,
-  },
-
+  caseNumber: { fontWeight: "800", fontSize: 18, marginBottom: 10 },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
     alignItems: "center",
   },
-
-  left: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    flex: 1,
-  },
-
-  label: {
-    fontWeight: "600",
-    fontSize: 14,
-  },
-
+  left: { flexDirection: "row", alignItems: "center", gap: 6, flex: 1 },
+  label: { fontWeight: "600", fontSize: 14 },
   value: {
     fontSize: 14,
     fontWeight: "500",

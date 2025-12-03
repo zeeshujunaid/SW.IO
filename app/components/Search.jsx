@@ -1,7 +1,7 @@
-import { View, Text, TextInput } from "react-native";
+import { View, TextInput } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-export default function Searchbar() {
+export default function Searchbar({ value, onChange }) {
   return (
     <View
       style={{
@@ -10,15 +10,14 @@ export default function Searchbar() {
         paddingBottom: 25,
       }}
     >
-      {/* Search Bar */}
       <View
         style={{
           width: "100%",
           height: 50,
           flexDirection: "row",
           alignItems: "center",
-          borderColor:"#border: 1px solid rgba(0, 0, 0, 0.12)",
-          borderWidth:1,
+          borderColor: "rgba(0, 0, 0, 0.12)",
+          borderWidth: 1,
           paddingHorizontal: 12,
           borderRadius: 10,
         }}
@@ -32,6 +31,8 @@ export default function Searchbar() {
             marginLeft: 10,
           }}
           placeholderTextColor="#777"
+          value={value} // controlled input
+          onChangeText={onChange} // callback to parent
         />
       </View>
     </View>

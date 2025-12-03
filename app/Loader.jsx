@@ -7,9 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Logoanimation() {
   const router = useRouter();
-
-  const { setInquiries, setLoading, setError, setPage, setTotalPages } =
-    useContext(InquiryContext);
+  const { setInquiries, setLoading, setError } = useContext(InquiryContext);
 
   const slideAnim = useRef(new Animated.Value(200)).current;
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -20,11 +18,10 @@ export default function Logoanimation() {
         setLoading(true);
 
         const token = await AsyncStorage.getItem("token");
-        const id = await AsyncStorage.getItem("id");
+        if (!token) throw new Error("Token not found");
 
-        if (!token || !id) throw new Error("Token or ID not found");
-
-        const response = await fetch(`${baseurl}/api/inquiry?page=1&limit=10`, {
+        // Fetch all inquiries without pagination
+        const response = await fetch(`${baseurl}/api/inquiry?limit=1000`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -36,11 +33,8 @@ export default function Logoanimation() {
 
         const data = await response.json();
 
-        // Save in context
+        // Save all data to context
         setInquiries(data?.data || []);
-        setPage(data?.pagination?.currentPage || 1);
-        setTotalPages(data?.pagination?.totalPages || 1);
-
         setLoading(false);
         setDataLoaded(true);
       } catch (err) {
@@ -50,7 +44,7 @@ export default function Logoanimation() {
       }
     };
 
-    // Start animation
+    // Start slide animation
     Animated.timing(slideAnim, {
       toValue: -39,
       duration: 800,

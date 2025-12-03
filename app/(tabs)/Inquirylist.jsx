@@ -204,7 +204,7 @@ export default function Inquirylist() {
                 <Text style={styles.label}>Required Help:</Text>
               </View>
               <Text style={styles.value}>
-                {item.caseId?.saailId?.helpfor || "-"}
+                {item.caseId?.saailId?.helpFor || "-"}
               </Text>
             </View>
           </View>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   Text,
   View,
@@ -17,68 +17,26 @@ import { useRouter } from "expo-router";
 import Header from "../components/Header";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Activity() {
   const router = useRouter();
+  const { inquiries } = useContext(InquiryContext); // get all inquiries
   const [searchText, setSearchText] = useState("");
 
-  const cases = [
-    {
-      caseNumber: "Case #01",
-      code: "001-CH-00",
-      name: "Ali Khan",
-      date: "29-oct-2025",
-      area: "Gulshan",
-      address: "Street 12, Karachi",
-      help: "Medical",
-    },
-    {
-      caseNumber: "Case #02",
-      code: "002-CH-01",
-      name: "Sara Ahmed",
-      date: "29-oct-2025",
-      area: "Korangi",
-      address: "Block 3, Karachi",
-      help: "Food",
-    },
-    {
-      caseNumber: "Case #03",
-      code: "002-CH-02",
-      name: "Sara Ahmed",
-      date: "29-oct-2025",
-      area: "Korangi",
-      address: "Block 3, Karachi",
-      help: "Food",
-    },
-    {
-      caseNumber: "Case #04",
-      code: "002-CH-03",
-      name: "Sara Ahmed",
-      date: "29-oct-2025",
-      area: "Korangi",
-      address: "Block 3, Karachi",
-      help: "Food",
-    },
-    {
-      caseNumber: "Case #05",
-      code: "002-CH-04",
-      name: "Sara Ahmed",
-      date: "29-oct-2025",
-      area: "Korangi",
-      address: "Block 3, Karachi",
-      help: "Food",
-    },
-  ];
+  console.log(inquiries);
 
-  // Filter cases based on search text (name, area, help)
-  const filteredCases = cases.filter((item) => {
-    const lower = searchText.toLowerCase();
-    return (
-      item.name.toLowerCase().includes(lower) ||
-      item.area.toLowerCase().includes(lower) ||
-      item.help.toLowerCase().includes(lower)
-    );
-  });
+  // Filter inquiries to only "Completed" status and match search
+  const filteredCases = inquiries
+    .filter((item) => item.status === "Completed") // only completed
+    .filter((item) => {
+      const lower = searchText.toLowerCase();
+      return (
+        item.caseId?.saailId?.name?.toLowerCase().includes(lower) ||
+        item.caseId?.saailId?.area?.toLowerCase().includes(lower) ||
+        item.caseId?.saailId?.helpfor?.toLowerCase().includes(lower)
+      );
+    });
 
   return (
     <KeyboardAvoidingView
@@ -106,10 +64,12 @@ export default function Activity() {
           </View>
 
           {/* Filtered Cases */}
-          {filteredCases.map((item) => (
-            <View key={item.caseNumber} style={styles.card}>
+          {filteredCases.map((item, index) => (
+            <View key={item._id} style={styles.card}>
               <View style={styles.caseRow}>
-                <Text style={styles.caseNumber}>{item.caseNumber}</Text>
+                <Text style={styles.caseNumber}>
+                  Case #{(index + 1).toString().padStart(2, "0")}
+                </Text>
                 <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>View Details</Text>
                 </TouchableOpacity>
@@ -121,7 +81,7 @@ export default function Activity() {
                   <FontAwesome name="hashtag" size={16} color="#8dc63f" />
                   <Text style={styles.label}>Case Number:</Text>
                 </View>
-                <Text style={styles.value}>{item.code}</Text>
+                <Text style={styles.value}>{item.caseId?.caseNo || "-"}</Text>
               </View>
 
               {/* Date */}
@@ -134,7 +94,9 @@ export default function Activity() {
                   />
                   <Text style={styles.label}>Date:</Text>
                 </View>
-                <Text style={styles.value}>{item.date}</Text>
+                <Text style={styles.value}>
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </Text>
               </View>
 
               {/* Name */}
@@ -143,7 +105,9 @@ export default function Activity() {
                   <Feather name="user" size={16} color="#8dc63f" />
                   <Text style={styles.label}>Saail Name:</Text>
                 </View>
-                <Text style={styles.value}>{item.name}</Text>
+                <Text style={styles.value}>
+                  {item.caseId?.saailId?.name || "-"}
+                </Text>
               </View>
 
               {/* Area */}
@@ -152,7 +116,9 @@ export default function Activity() {
                   <Entypo name="location-pin" size={18} color="#8dc63f" />
                   <Text style={styles.label}>Area:</Text>
                 </View>
-                <Text style={styles.value}>{item.area}</Text>
+                <Text style={styles.value}>
+                  {item.caseId?.saailId?.area || "-"}
+                </Text>
               </View>
 
               {/* Address */}
@@ -165,7 +131,9 @@ export default function Activity() {
                   />
                   <Text style={styles.label}>Address:</Text>
                 </View>
-                <Text style={styles.value}>{item.address}</Text>
+                <Text style={styles.value}>
+                  {item.caseId?.saailId?.address || "-"}
+                </Text>
               </View>
 
               {/* Help */}
@@ -178,7 +146,9 @@ export default function Activity() {
                   />
                   <Text style={styles.label}>Required Help:</Text>
                 </View>
-                <Text style={styles.value}>{item.help}</Text>
+                <Text style={styles.value}>
+                  {item.caseId?.saailId?.helpfor || "-"}
+                </Text>
               </View>
 
               <TouchableOpacity style={styles.completebutton}>

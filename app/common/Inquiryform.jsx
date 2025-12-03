@@ -170,11 +170,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   backcontainer: {
-  flexDirection: "row",
-  alignItems: "center",
-  paddingHorizontal: 10,
-  paddingVertical: 12,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+  },
   row: {
     flexDirection: "row",
     gap: 12,

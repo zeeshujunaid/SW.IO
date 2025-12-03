@@ -24,10 +24,7 @@ export default function RootLayout() {
           name="/(tabs)/Inquirylist"
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="/(tabs)/Profile"
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="/(tabs)/Profile" options={{ headerShown: false }} />
       </Stack>
       <Toast />
     </GestureHandlerRootView>

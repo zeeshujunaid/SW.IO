@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import Foundation from "@expo/vector-icons/Foundation";
-import  Header from "../components/Backheader";
+import Header from "../components/Backheader";
 export default function Editprofile() {
   return (
     <>

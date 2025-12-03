@@ -7,7 +7,7 @@ export default function Header() {
 
   return (
     <View style={styles.container}>
-          <View style={styles.leftSection}>
+      <View style={styles.leftSection}>
         <Image
           source={require("../../assets/images/saylanilogo.png")}
           style={styles.logo}
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     height: 90,
     flexDirection: "row",
     paddingTop: 20,
-    gap:20,
-    alignItems:"center",
+    gap: 20,
+    alignItems: "center",
     backgroundColor: "#ffffffff",
   },
 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 
   logo: {
     width: "100%",
-    marginLeft:30,
+    marginLeft: 30,
     height: "70%",
   },
 

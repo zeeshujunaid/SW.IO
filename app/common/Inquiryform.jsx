@@ -9,8 +9,13 @@ import {
   Platform,
 } from "react-native";
 import BackHeader from "../components/Backheader";
+import { useLocalSearchParams } from "expo-router";
 
 export default function Inquiryform() {
+  const params = useLocalSearchParams();
+  const caseData = params.caseData ? JSON.parse(params.caseData) : null;
+
+  console.log(caseData);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -19,79 +24,146 @@ export default function Inquiryform() {
       <View style={{ flex: 1 }}>
         <BackHeader />
         <ScrollView contentContainerStyle={styles.container}>
-          {/* Row 1: Name & Date */}
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Case No</Text>
-              <TextInput style={styles.input} />
+              <TextInput
+                style={styles.input}
+                pointerEvents="none"
+                value={caseData.caseId?.caseNo || ""}
+              />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Date</Text>
-              <TextInput style={styles.input} />
+              <TextInput
+                style={styles.input}
+                pointerEvents="none"
+                value={
+                  caseData.caseId?.createdAt
+                    ? new Date(caseData.caseId.createdAt).toLocaleDateString()
+                    : ""
+                }
+              />
             </View>
           </View>
 
           {/* Row 2: Sibling/Other Name */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Sail Name</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              pointerEvents="none"
+              value={caseData.caseId?.saailId?.name || ""}
+            />
           </View>
 
           {/* Row 3: Father/Husband */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Father/Husband Name</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              pointerEvents="none"
+              value={caseData.caseId?.saailId?.father_husbandName || ""}
+            />
           </View>
 
           {/* Row 4: Address */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Address</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              pointerEvents="none"
+              value={caseData.caseId?.saailId?.address || ""}
+            />
           </View>
 
           {/* Row 5: Nearby Place */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Nearby Place</Text>
-            <TextInput style={styles.input} />
+            <TextInput style={styles.input} pointerEvents="none" />
           </View>
 
           {/* Row 6: Profession */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Profession</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              pointerEvents="none"
+              value={caseData.caseId?.saailId?.profession || ""}
+            />
           </View>
 
           {/* Row 7: Family Members */}
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Family members</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={
+                  caseData.caseId?.saailId?.familyMember?.total?.toString() ||
+                  "0"
+                }
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Boys</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={
+                  caseData.caseId?.saailId?.Familymember?.numberofboys
+                }
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Girls</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                pointerEvents="none"
+                value={
+                  caseData.caseId?.saailId?.childrenDetails
+                    ?.filter((c) => c.gender === "female")
+                    .length?.toString() || "0"
+                }
+              />
             </View>
           </View>
 
           {/* Row 8: Landlord Name */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Landlord Name</Text>
-            <TextInput style={styles.input} />
+            <TextInput
+              style={styles.input}
+              pointerEvents="none"
+              value={caseData.caseId?.saailId?.landLordName || ""}
+            />
           </View>
 
           {/* Row 9: Landlord CNIC & Rent Amount */}
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Landlord CNIC</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={caseData.caseId?.saailId?.landLordCnic || ""}
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Rent Amount</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={
+                  caseData.caseId?.saailId?.monthlyExpenses?.toString() || ""
+                }
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
           </View>
 
@@ -99,11 +171,20 @@ export default function Inquiryform() {
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Income/Salary</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Monthly Expense</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={caseData.caseId?.saailId?.rentAmount?.toString() || ""}
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
           </View>
 
@@ -111,29 +192,45 @@ export default function Inquiryform() {
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Monthly Income</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={caseData.caseId?.saailId?.salary?.toString() || ""}
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Rent Amount</Text>
-              <TextInput style={styles.input} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                value={
+                  caseData.caseId?.saailId?.monthlyExpenses?.toString() || ""
+                }
+                keyboardType="numeric"
+                pointerEvents="none"
+              />
             </View>
           </View>
 
           {/* Row 12: Single Amount Needed */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Amount Needed</Text>
-            <TextInput style={styles.input} keyboardType="numeric" />
+            <TextInput
+              style={styles.input}
+              value={caseData.caseId?.saailId?.amountNeeded?.toString() || ""}
+              keyboardType="numeric"
+              pointerEvents="none"
+            />
           </View>
 
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Remarks</Text>
-            <TextInput style={styles.input} keyboardType="numeric" />
-          </View>
-
-          {/* Row 13: Visit Date */}
-          <View style={styles.inputWrapper}>
-            <Text style={styles.boldlabel}>Visit Date</Text>
-            <TextInput style={styles.input} placeholder="Select Visit Date" />
+            <TextInput
+              style={styles.input}
+              value={caseData.caseId?.saailId?.anyKindOfDomesticProblem || ""}
+              keyboardType="numeric"
+              pointerEvents="none"
+            />
           </View>
 
           {/* Row 14: Description / Details */}
@@ -146,13 +243,6 @@ export default function Inquiryform() {
             />
           </View>
 
-          {/* Row 15: One Time/Madd List */}
-          <View style={styles.inputWrapper}>
-            <Text style={styles.boldlabel}>Madad List</Text>
-            <TextInput style={styles.input} />
-          </View>
-
-          {/* Save Button */}
           <TouchableOpacity style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>

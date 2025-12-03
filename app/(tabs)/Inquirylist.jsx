@@ -129,7 +129,12 @@ export default function Inquirylist() {
 
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.push("/common/Inquiryform")}
+                onPress={() =>
+                  router.push({
+                    pathname: "/common/Inquiryform",
+                    params: { caseData: JSON.stringify(item) },
+                  })
+                }
               >
                 <Text style={styles.buttonText}>Add Feedback</Text>
               </TouchableOpacity>

@@ -62,7 +62,7 @@ export default function Inquirylist() {
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await fetch(
-        `${baseurl}/api/inquiry?limit=10&page=${pageNumber}`,
+        `${baseurl}/api/inquiry?limit=6&page=${pageNumber}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -101,7 +101,10 @@ export default function Inquirylist() {
     <View style={styles.container}>
       <Header />
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Enquiries List</Text>
 
@@ -128,7 +131,7 @@ export default function Inquirylist() {
                 style={styles.button}
                 onPress={() => router.push("/common/Inquiryform")}
               >
-                <Text style={styles.buttonText}>View Details</Text>
+                <Text style={styles.buttonText}>Add Feedback</Text>
               </TouchableOpacity>
             </View>
 
@@ -212,12 +215,14 @@ export default function Inquirylist() {
 
         {/* Load More Button */}
         {hasMore && (
-          <TouchableOpacity style={styles.loadMoreBtn} onPress={loadMore}>
+          <TouchableOpacity style={styles.loadMoreWrapper} onPress={loadMore}>
+            <View style={styles.line} />
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#0071BA" />
             ) : (
-              <Text style={styles.loadMoreText}>Load More</Text>
+              <Text style={styles.loadMoreText}>View More</Text>
             )}
+            <View style={styles.line} />
           </TouchableOpacity>
         )}
       </ScrollView>
@@ -286,13 +291,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   buttonText: { color: "#fff", fontWeight: "700", fontSize: 14 },
-  loadMoreBtn: {
-    backgroundColor: "#0071BA",
-    paddingVertical: 12,
-    borderRadius: 10,
+  loadMoreWrapper: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
     marginVertical: 15,
-    marginHorizontal: 50,
   },
-  loadMoreText: { color: "#fff", fontWeight: "700", fontSize: 16 },
+
+  line: {
+    height: 1,
+    backgroundColor: "#ccc",
+    flex: 1,
+  },
+
+  loadMoreText: {
+    color: "#0071BA",
+    fontWeight: "700",
+    fontSize: 14,
+    paddingHorizontal: 5,
+  },
 });

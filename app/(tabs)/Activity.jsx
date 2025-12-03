@@ -70,9 +70,6 @@ export default function Activity() {
                 <Text style={styles.caseNumber}>
                   Case #{(index + 1).toString().padStart(2, "0")}
                 </Text>
-                <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>View Details</Text>
-                </TouchableOpacity>
               </View>
 
               {/* Case Code */}
@@ -156,7 +153,7 @@ export default function Activity() {
                   style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
                 >
                   <AntDesign name="check-circle" size={20} color="#fff" />
-                  <Text style={styles.buttonText}>Order Completed</Text>
+                  <Text style={styles.buttonText}>Case Completed</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, marginLeft: 10, fontSize: 16, color: "#000" },
   caseRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
   },

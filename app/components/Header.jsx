@@ -16,9 +16,11 @@ export default function Header() {
       </View>
 
       <View style={styles.rightSection}>
+        <TouchableOpacity onPress={()=>router.push("/common/seedata")}>
         <View style={styles.notification}>
           <Ionicons name="notifications-outline" size={20} color="black" />
         </View>
+        </TouchableOpacity>
 
         {/* Profile */}
         <TouchableOpacity onPress={() => router.push("/(tabs)/Profile")}>

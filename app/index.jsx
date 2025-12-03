@@ -12,6 +12,8 @@ import {
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // <- AsyncStorage import
+import { baseurl } from "../services/config";
 
 export default function Index() {
   const router = useRouter();
@@ -19,7 +21,7 @@ export default function Index() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handellogin = () => {
+  const handellogin = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email || !emailRegex.test(email)) {
@@ -44,9 +46,56 @@ export default function Index() {
       return;
     }
 
-    router.replace("/(tabs)/Homescreen");
-    setEmail("");
-    setPassword("");
+    // API call
+    try {
+      const response = await fetch(`${baseurl}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) {
+        Toast.show({
+          type: "error",
+          text1: "Login Failed",
+          text2: data.message || "Invalid credentials",
+        });
+        return;
+      }
+
+      // Login ke baad
+      const token = data?.data?.accessToken;
+      const id = data?.data?.user?._id; // <- correct path
+
+      if (token && id) {
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("id", id);
+        console.log("Token and id saved successfully", token, id);
+      } else {
+        console.log("Token not found in response");
+      }
+      Toast.show({
+        type: "success",
+        text1: "Login Success",
+      });
+
+      router.replace("/Loader");
+    } catch (err) {
+      console.log("Login error:", err);
+      Toast.show({
+        type: "error",
+        text1: "Login Error",
+        text2: "Something went wrong. Try again.",
+      });
+    }
+
+    // setEmail("");
+    // setPassword("");
   };
 
   return (
@@ -73,7 +122,6 @@ export default function Index() {
           </View>
 
           <View style={styles.form}>
-            {/* Email */}
             <Text style={styles.label}>Email Address</Text>
             <View style={styles.inputContainer}>
               <TextInput
@@ -86,7 +134,6 @@ export default function Index() {
               />
             </View>
 
-            {/* Password */}
             <Text style={styles.label}>Password</Text>
             <View style={styles.inputContainer}>
               <TextInput
@@ -99,7 +146,6 @@ export default function Index() {
               />
             </View>
 
-            {/* Error UI */}
             {error === "email" && (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>
@@ -107,7 +153,6 @@ export default function Index() {
                 </Text>
               </View>
             )}
-
             {error === "password" && (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>
@@ -149,7 +194,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 25,
     paddingVertical: 55,
-    backgroundColor: "#ffffffff",
+    backgroundColor: "#fff",
   },
   logo: {
     width: 200,

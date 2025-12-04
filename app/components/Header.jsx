@@ -8,7 +8,6 @@ export default function Header() {
   const router = useRouter();
   const [profileImage, setProfileImage] = useState(null);
 
-  // Load profile image from AsyncStorage whenever screen is focused
   useFocusEffect(
     useCallback(() => {
       const fetchProfileImage = async () => {
@@ -44,7 +43,6 @@ export default function Header() {
           </View>
         </TouchableOpacity>
 
-        {/* Profile */}
         <TouchableOpacity onPress={() => router.push("/(tabs)/Profile")}>
           <Image
             source={
@@ -71,7 +69,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   leftSection: { width: "70%" },
-  logo: { width: "100%", marginLeft: 10, height: "70%" },
+  logo: { 
+    width: "100%", 
+    marginLeft: 10, 
+    height: "70%" 
+  },
   rightSection: {
     flexDirection: "row",
     alignItems: "center",
@@ -87,8 +89,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
   },
-  profileImage: { width: 35, height: 35, borderRadius: 20 },
+  profileImage: { 
+    width: 35, 
+    height: 35, 
+    borderRadius: 20 
+  },
   userInfo: { flex: 1 },
-  userName: { fontSize: 14, fontWeight: "700", color: "#000" },
-  userRole: { fontSize: 12, color: "#555" },
+  userName: { 
+    fontSize: 14, 
+    fontWeight: "700", 
+    color: "#000" 
+  },
+  userRole: { 
+    fontSize: 12, 
+    color: "#555" 
+  },
 });

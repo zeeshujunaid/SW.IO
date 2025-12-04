@@ -32,7 +32,7 @@ export default function AutoLocation({ onLocationFetched }) {
             place.postalCode,
             place.country,
           ]
-            .filter((v) => v && !v.includes("+")) // remove plus code
+            .filter((v) => v && !v.includes("+")) 
             .join(", ");
         }
 

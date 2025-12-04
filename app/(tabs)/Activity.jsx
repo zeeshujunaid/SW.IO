@@ -22,7 +22,7 @@ import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Activity() {
   const router = useRouter();
-  const { inquiries, fetchInquiries } = useContext(InquiryContext); // get all inquiries
+  const { inquiries, fetchInquiries } = useContext(InquiryContext); 
   const [searchText, setSearchText] = useState("");
 
   console.log(inquiries);
@@ -73,8 +73,6 @@ export default function Activity() {
               />
             </View>
           </View>
-
-          {/* Filtered Cases */}
           {filteredCases.map((item, index) => (
             <View key={item._id} style={styles.card}>
               <View style={styles.caseRow}>
@@ -83,7 +81,6 @@ export default function Activity() {
                 </Text>
               </View>
 
-              {/* Case Code */}
               <View style={styles.row}>
                 <View style={styles.left}>
                   <FontAwesome name="hashtag" size={16} color="#8dc63f" />
@@ -92,7 +89,6 @@ export default function Activity() {
                 <Text style={styles.value}>{item.caseId?.caseNo || "-"}</Text>
               </View>
 
-              {/* Date */}
               <View style={styles.row}>
                 <View style={styles.left}>
                   <MaterialCommunityIcons
@@ -107,7 +103,6 @@ export default function Activity() {
                 </Text>
               </View>
 
-              {/* Name */}
               <View style={styles.row}>
                 <View style={styles.left}>
                   <Feather name="user" size={16} color="#8dc63f" />
@@ -118,7 +113,6 @@ export default function Activity() {
                 </Text>
               </View>
 
-              {/* Area */}
               <View style={styles.row}>
                 <View style={styles.left}>
                   <Entypo name="location-pin" size={18} color="#8dc63f" />
@@ -129,7 +123,6 @@ export default function Activity() {
                 </Text>
               </View>
 
-              {/* Address */}
               <View style={styles.row}>
                 <View style={styles.left}>
                   <MaterialCommunityIcons
@@ -144,7 +137,6 @@ export default function Activity() {
                 </Text>
               </View>
 
-              {/* Help */}
               <View style={styles.row}>
                 <View style={styles.left}>
                   <MaterialCommunityIcons

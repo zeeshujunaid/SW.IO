@@ -4,8 +4,6 @@ import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as NavigationBar from "expo-navigation-bar";
 import { useEffect } from "react";
-
-// Import context provider
 import InquiryProvider from "./context/Inquirycontext";
 
 export default function RootLayout() {
@@ -15,7 +13,6 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {/* Wrap your app with InquiryProvider */}
       <InquiryProvider>
         <Stack screenOptions={{ headerShown: false }} initialRouteName="index">
           <Stack.Screen name="/index" options={{ headerShown: false }} />

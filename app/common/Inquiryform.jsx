@@ -197,7 +197,6 @@ const handellogin = async () => {
             </View>
           </View>
 
-          {/* Row 8: Landlord Name */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Landlord Name</Text>
             <TextInput
@@ -207,7 +206,6 @@ const handellogin = async () => {
             />
           </View>
 
-          {/* Row 9: Landlord CNIC & Rent Amount */}
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Landlord CNIC</Text>
@@ -229,7 +227,6 @@ const handellogin = async () => {
             </View>
           </View>
 
-          {/* Row 10: Income & Monthly Expense */}
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Income/Salary</Text>
@@ -249,7 +246,6 @@ const handellogin = async () => {
             </View>
           </View>
 
-          {/* Row 11: Monthly Income & Rent Amount */}
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Monthly Income</Text>
@@ -273,7 +269,6 @@ const handellogin = async () => {
             </View>
           </View>
 
-          {/* Row 12: Single Amount Needed */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Amount Needed</Text>
             <TextInput
@@ -294,7 +289,6 @@ const handellogin = async () => {
             />
           </View>
 
-          {/* Row 14: Description / Details */}
           <View style={styles.inputWrapper}>
             <Text style={styles.boldlabel}>General Question</Text>
             <TextInput
@@ -306,7 +300,6 @@ const handellogin = async () => {
             />
           </View>
 
-          {/* Save Button */}
           <TouchableOpacity style={styles.saveButton} onPress={handellogin}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>

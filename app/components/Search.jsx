@@ -31,8 +31,8 @@ export default function Searchbar({ value, onChange }) {
             marginLeft: 10,
           }}
           placeholderTextColor="#777"
-          value={value} // controlled input
-          onChangeText={onChange} // callback to parent
+          value={value} 
+          onChangeText={onChange}
         />
       </View>
     </View>

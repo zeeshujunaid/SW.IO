@@ -43,7 +43,6 @@ export default function Herosection() {
 
   return (
     <View style={styles.container}>
-      {/* Top Card */}
       <View style={styles.topCard}>
         <View style={styles.topCardHeader}>
           <View style={styles.topCardIcon}>
@@ -60,9 +59,8 @@ export default function Herosection() {
         </View>
       </View>
 
-      {/* Bottom Row Cards */}
+
       <View style={styles.bottomRow}>
-        {/* Completed Card */}
         <View style={styles.bottomCard}>
           <View style={styles.bottomCardHeader}>
             <View style={styles.completedIcon}>
@@ -79,7 +77,6 @@ export default function Herosection() {
           </View>
         </View>
 
-        {/* Pending Card */}
         <View style={styles.bottomCard}>
           <View style={styles.bottomCardHeader}>
             <Image
@@ -107,8 +104,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
   },
-
-  // Top Card
   topCard: {
     backgroundColor: "#fff",
     padding: 16,
@@ -155,8 +150,6 @@ const styles = StyleSheet.create({
   topCardVs: {
     color: "#666",
   },
-
-  // Bottom Row
   bottomRow: {
     flexDirection: "row",
     justifyContent: "space-between",

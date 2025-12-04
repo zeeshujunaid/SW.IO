@@ -14,7 +14,6 @@ export default function BackHeader() {
         </TouchableOpacity>
       </View>
 
-      {/* Middle: Logo */}
       <View style={styles.middleSection}>
         <Image
           source={require("../../assets/images/saylanilogo.png")}
@@ -23,7 +22,6 @@ export default function BackHeader() {
         />
       </View>
 
-      {/* Right: Notification & Profile */}
       <View style={styles.rightSection}>
         <View style={styles.notification}>
           <Ionicons name="notifications-outline" size={20} color="black" />

@@ -28,19 +28,16 @@ export default function Inquirylist() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Initial Fetch
   useEffect(() => {
     fetchCases(1, true);
   }, []);
 
-  // Refetch when screen focuses (AFTER SAVE)
   useFocusEffect(
     React.useCallback(() => {
       fetchCases(1, true);
     }, [])
   );
 
-  // Search Filter
   useEffect(() => {
     const pending = cases.filter((item) => !item.caseId?.isFeedbackProvided);
 
@@ -68,7 +65,6 @@ export default function Inquirylist() {
     }
   }, [searchText, cases]);
 
-  // Fetch Cases (main function)
   const fetchCases = async (pageNumber = 1, reset = false) => {
     if (loading) return;
     setLoading(true);
@@ -159,8 +155,6 @@ export default function Inquirylist() {
                 <Text style={styles.buttonText}>Add Feedback</Text>
               </TouchableOpacity>
             </View>
-
-            {/* Case Details */}
             {[
               {
                 icon: FontAwesome,

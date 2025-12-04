@@ -29,7 +29,6 @@ export default function Editprofile() {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  // Pick image from gallery & upload immediately
   const pickImage = async () => {
     try {
       const permissionResult =
@@ -80,7 +79,6 @@ export default function Editprofile() {
           const resultData = await response.json();
           console.log("Image uploaded:", resultData);
 
-          // Update UI with backend returned path
           if (resultData?.image?.fileUrl) {
             setImage(resultData.image.fileUrl);
           }
@@ -96,8 +94,6 @@ export default function Editprofile() {
     }
   };
 
-
-  // Load user data from params
   useEffect(() => {
     if (params.user) {
       const parsed = JSON.parse(params.user);
@@ -109,7 +105,6 @@ export default function Editprofile() {
     }
   }, [params.user]);
 
-  // Save updated data
   const handleSave = async () => {
     try {
       const updatedUser = {
@@ -121,7 +116,6 @@ export default function Editprofile() {
         image: image ? { fileUrl: image } : userData.image, 
       };
 
-      // Save to AsyncStorage
       const storedData = await AsyncStorage.getItem("userdata");
       const parsed = JSON.parse(storedData);
       parsed.data.user = updatedUser;
@@ -156,7 +150,6 @@ export default function Editprofile() {
     >
       <Header />
 
-      {/* Profile Image */}
       <View style={styles.profileWrapper}>
         <View style={styles.profileRow}>
           <Image
@@ -183,7 +176,6 @@ export default function Editprofile() {
         </View>
       </View>
 
-      {/* Form Fields */}
       <View style={styles.formContainer}>
         <View style={styles.inputWrapper}>
           <Text style={styles.label}>Name</Text>
@@ -229,9 +221,18 @@ export default function Editprofile() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  profileWrapper: { alignSelf: "center", marginTop: 20 },
-  profileRow: { flexDirection: "row", alignItems: "flex-end" },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#fff" 
+  },
+  profileWrapper: { 
+    alignSelf: "center", 
+    marginTop: 20 
+  },
+  profileRow: { 
+    flexDirection: "row", 
+    alignItems: "flex-end" 
+  },
   profileImage: {
     width: 150,
     height: 150,
@@ -249,7 +250,11 @@ const styles = StyleSheet.create({
     marginLeft: -50,
     marginBottom: 5,
   },
-  formContainer: { marginTop: 30, paddingHorizontal: 20, gap: 15 },
+  formContainer: { 
+  marginTop: 30, 
+  paddingHorizontal: 20, 
+  gap: 15 
+},
   inputWrapper: { gap: 6 },
   label: { fontSize: 14, fontWeight: "600", color: "#555" },
   input: {

@@ -20,7 +20,6 @@ export default function Logoanimation() {
         const token = await AsyncStorage.getItem("token");
         if (!token) throw new Error("Token not found");
 
-        // Fetch all inquiries without pagination
         const response = await fetch(`${baseurl}/api/inquiry?limit=1000`, {
           method: "GET",
           headers: {
@@ -32,8 +31,6 @@ export default function Logoanimation() {
         if (!response.ok) throw new Error("Failed to fetch inquiries");
 
         const data = await response.json();
-
-        // Save all data to context
         setInquiries(data?.data || []);
         setLoading(false);
         setDataLoaded(true);
@@ -44,7 +41,6 @@ export default function Logoanimation() {
       }
     };
 
-    // Start slide animation
     Animated.timing(slideAnim, {
       toValue: -39,
       duration: 800,

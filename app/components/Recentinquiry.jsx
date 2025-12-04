@@ -10,8 +10,6 @@ import { InquiryContext } from "../context/Inquirycontext";
 export default function Recentinquiry({ searchText }) {
   const router = useRouter();
   const { inquiries } = useContext(InquiryContext);
-
-
   const cases = (inquiries || []).slice(0, 3);
 
 
@@ -115,7 +113,10 @@ export default function Recentinquiry({ searchText }) {
 }
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 12, paddingTop: 15 },
+  container: { 
+    paddingHorizontal: 12, 
+    paddingTop: 15 
+  },
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -123,8 +124,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#eee",
   },
-  headingText: { fontSize: 18, fontWeight: "bold" },
-  viewAllText: { fontSize: 14, fontWeight: "600", color: "#0071BA" },
+  headingText: {
+     fontSize: 18,
+      fontWeight: "bold"
+     },
+  viewAllText: { 
+    fontSize: 14, 
+    fontWeight: "600", 
+    color: "#0071BA" 
+  },
   card: {
     borderColor: "#00000020",
     borderWidth: 1,
@@ -133,15 +141,27 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#fff",
   },
-  caseNumber: { fontWeight: "800", fontSize: 18, marginBottom: 10 },
+  caseNumber: { 
+    fontWeight: "800", 
+    fontSize: 18, 
+    marginBottom: 10 
+  },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
     alignItems: "center",
   },
-  left: { flexDirection: "row", alignItems: "center", gap: 6, flex: 1 },
-  label: { fontWeight: "600", fontSize: 14 },
+  left: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    gap: 6, 
+    flex: 1 
+  },
+  label: {
+     fontWeight: "600",
+      fontSize: 14 
+    },
   value: {
     fontSize: 14,
     fontWeight: "500",

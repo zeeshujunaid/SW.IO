@@ -14,7 +14,6 @@ import { useFocusEffect } from "expo-router";
 export default function Profile() {
   const [userdata, setUserdata] = useState(null);
 
-  // Fetch user data every time screen is focused
   useFocusEffect(
     useCallback(() => {
       const fetchUser = async () => {
@@ -33,14 +32,12 @@ export default function Profile() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Background Image */}
       <Image
         source={require("../../assets/images/profilebg.png")}
         style={styles.bgImage}
         resizeMode="cover"
       />
 
-      {/* Profile Image */}
       <Image
         source={
           userdata?.data?.user?.image?.fileUrl
@@ -51,7 +48,6 @@ export default function Profile() {
         resizeMode="cover"
       />
 
-      {/* Edit Profile Button */}
       <TouchableOpacity
         style={styles.editButton}
         onPress={() =>
@@ -64,7 +60,6 @@ export default function Profile() {
         <Text style={styles.editButtonText}>Edit Profile</Text>
       </TouchableOpacity>
 
-      {/* User Details */}
       <View style={styles.detailsContainer}>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Name:</Text>

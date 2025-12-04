@@ -1,4 +1,5 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react"
+import { useFocusEffect } from "@react-navigation/native";
 import {
   Text,
   View,
@@ -21,20 +22,27 @@ import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Activity() {
   const router = useRouter();
-  const { inquiries } = useContext(InquiryContext); // get all inquiries
+  const { inquiries, fetchInquiries } = useContext(InquiryContext); // get all inquiries
   const [searchText, setSearchText] = useState("");
 
   console.log(inquiries);
 
-  // Filter inquiries to only "Completed" status and match search
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchInquiries();
+    }, [])
+  );
+
+
   const filteredCases = inquiries
-    .filter((item) => item.status === "Completed") // only completed
+    .filter((item) => item.status === "Completed")
     .filter((item) => {
       const lower = searchText.toLowerCase();
       return (
         item.caseId?.saailId?.name?.toLowerCase().includes(lower) ||
         item.caseId?.saailId?.area?.toLowerCase().includes(lower) ||
-        item.caseId?.saailId?.helpfor?.toLowerCase().includes(lower)
+        item.caseId?.saailId?.helpFor?.toLowerCase().includes(lower)
       );
     });
 
@@ -46,7 +54,10 @@ export default function Activity() {
       <View style={styles.container}>
         <Header />
 
-        <ScrollView contentContainerStyle={{ paddingBottom: 90 }}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 90 }}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Header & Search */}
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>Orders History</Text>
@@ -144,7 +155,7 @@ export default function Activity() {
                   <Text style={styles.label}>Required Help:</Text>
                 </View>
                 <Text style={styles.value}>
-                  {item.caseId?.saailId?.helpfor || "-"}
+                  {item.caseId?.saailId?.helpFor || "-"}
                 </Text>
               </View>
 

@@ -94,8 +94,8 @@ export default function Index() {
       });
     }
 
-    // setEmail("");
-    // setPassword("");
+    setEmail("");
+    setPassword("");
   };
 
   return (

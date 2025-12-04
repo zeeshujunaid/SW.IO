@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -8,12 +8,13 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { baseurl } from "../../services/config";
+import baseurl from "../../services/config";
 import { useRouter } from "expo-router";
 import Header from "../components/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -27,22 +28,33 @@ export default function Inquirylist() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+  // Initial Fetch
   useEffect(() => {
-    fetchCases(1);
+    fetchCases(1, true);
   }, []);
 
+  // Refetch when screen focuses (AFTER SAVE)
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchCases(1, true);
+    }, [])
+  );
+
+  // Search Filter
   useEffect(() => {
-    if (searchText === "") {
-      setFilteredCases(cases);
+    const pending = cases.filter((item) => !item.caseId?.isFeedbackProvided);
+
+    if (!searchText) {
+      setFilteredCases(pending);
     } else {
-      const filtered = cases.filter((item) => {
+      const text = searchText.toLowerCase();
+      const filtered = pending.filter((item) => {
         const saailName = item.caseId?.saailId?.name || "";
         const area = item.caseId?.saailId?.area || "";
         const caseNo = item.caseId?.caseNo || "";
         const address = item.caseId?.saailId?.address || "";
-        const helpfor = item.caseId?.saailId?.helpfor || "";
+        const helpfor = item.caseId?.saailId?.helpFor || "";
 
-        const text = searchText.toLowerCase();
         return (
           saailName.toLowerCase().includes(text) ||
           area.toLowerCase().includes(text) ||
@@ -51,11 +63,13 @@ export default function Inquirylist() {
           helpfor.toLowerCase().includes(text)
         );
       });
+
       setFilteredCases(filtered);
     }
   }, [searchText, cases]);
 
-  const fetchCases = async (pageNumber = 1) => {
+  // Fetch Cases (main function)
+  const fetchCases = async (pageNumber = 1, reset = false) => {
     if (loading) return;
     setLoading(true);
 
@@ -77,8 +91,12 @@ export default function Inquirylist() {
         setHasMore(casesData.length > 0);
       }
 
-      if (pageNumber === 1) setCases(casesData);
-      else setCases((prev) => [...prev, ...casesData]);
+      if (reset || pageNumber === 1) {
+        setCases(casesData);
+        setPage(1);
+      } else {
+        setCases((prev) => [...prev, ...casesData]);
+      }
     } catch (error) {
       console.log("API fetch error:", error);
     } finally {
@@ -86,15 +104,11 @@ export default function Inquirylist() {
     }
   };
 
-  const handleSearch = (text) => {
-    setSearchText(text);
-  };
-
   const loadMore = () => {
     if (!hasMore || loading) return;
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchCases(nextPage);
+    fetchCases(nextPage, false);
   };
 
   return (
@@ -115,10 +129,16 @@ export default function Inquirylist() {
               placeholderTextColor="#777"
               style={styles.searchInput}
               value={searchText}
-              onChangeText={handleSearch}
+              onChangeText={setSearchText}
             />
           </View>
         </View>
+
+        {filteredCases.length === 0 && !loading && (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No pending enquiries.
+          </Text>
+        )}
 
         {filteredCases.map((item, index) => (
           <View key={item._id} style={styles.card}>
@@ -140,85 +160,56 @@ export default function Inquirylist() {
               </TouchableOpacity>
             </View>
 
-            {/* Case Code */}
-            <View style={styles.row}>
-              <View style={styles.left}>
-                <FontAwesome name="hashtag" size={16} color="#0071BA" />
-                <Text style={styles.label}>Case Number:</Text>
+            {/* Case Details */}
+            {[
+              {
+                icon: FontAwesome,
+                name: "hashtag",
+                label: "Case Number",
+                value: item.caseId?.caseNo,
+              },
+              {
+                icon: MaterialCommunityIcons,
+                name: "calendar-clock",
+                label: "Date",
+                value: new Date(item.createdAt).toLocaleDateString(),
+              },
+              {
+                icon: Feather,
+                name: "user",
+                label: "Saail Name",
+                value: item.caseId?.saailId?.name,
+              },
+              {
+                icon: Entypo,
+                name: "location-pin",
+                label: "Area",
+                value: item.caseId?.saailId?.area,
+              },
+              {
+                icon: MaterialCommunityIcons,
+                name: "home-map-marker",
+                label: "Address",
+                value: item.caseId?.saailId?.address,
+              },
+              {
+                icon: MaterialCommunityIcons,
+                name: "hand-heart",
+                label: "Required Help",
+                value: item.caseId?.saailId?.helpFor,
+              },
+            ].map((field, i) => (
+              <View style={styles.row} key={i}>
+                <View style={styles.left}>
+                  <field.icon name={field.name} size={16} color="#0071BA" />
+                  <Text style={styles.label}>{field.label}:</Text>
+                </View>
+                <Text style={styles.value}>{field.value || "-"}</Text>
               </View>
-              <Text style={styles.value}>{item.caseId?.caseNo || "-"}</Text>
-            </View>
-
-            {/* Date */}
-            <View style={styles.row}>
-              <View style={styles.left}>
-                <MaterialCommunityIcons
-                  name="calendar-clock"
-                  size={16}
-                  color="#0071BA"
-                />
-                <Text style={styles.label}>Date:</Text>
-              </View>
-              <Text style={styles.value}>
-                {new Date(item.createdAt).toLocaleDateString()}
-              </Text>
-            </View>
-
-            {/* Name */}
-            <View style={styles.row}>
-              <View style={styles.left}>
-                <Feather name="user" size={16} color="#0071BA" />
-                <Text style={styles.label}>Saail Name:</Text>
-              </View>
-              <Text style={styles.value}>
-                {item.caseId?.saailId?.name || "-"}
-              </Text>
-            </View>
-
-            {/* Area */}
-            <View style={styles.row}>
-              <View style={styles.left}>
-                <Entypo name="location-pin" size={18} color="#0071BA" />
-                <Text style={styles.label}>Area:</Text>
-              </View>
-              <Text style={styles.value}>
-                {item.caseId?.saailId?.area || "-"}
-              </Text>
-            </View>
-
-            {/* Address */}
-            <View style={styles.row}>
-              <View style={styles.left}>
-                <MaterialCommunityIcons
-                  name="home-map-marker"
-                  size={18}
-                  color="#0071BA"
-                />
-                <Text style={styles.label}>Address:</Text>
-              </View>
-              <Text style={styles.value}>
-                {item.caseId?.saailId?.address || "-"}
-              </Text>
-            </View>
-
-            {/* Help */}
-            <View style={styles.row}>
-              <View style={styles.left}>
-                <MaterialCommunityIcons
-                  name="hand-heart"
-                  size={18}
-                  color="#0071BA"
-                />
-                <Text style={styles.label}>Required Help:</Text>
-              </View>
-              <Text style={styles.value}>
-                {item.caseId?.saailId?.helpFor || "-"}
-              </Text>
-            </View>
+            ))}
           </View>
         ))}
 
-        {/* Load More Button */}
         {hasMore && (
           <TouchableOpacity style={styles.loadMoreWrapper} onPress={loadMore}>
             <View style={styles.line} />
@@ -303,13 +294,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginVertical: 15,
   },
-
-  line: {
-    height: 1,
-    backgroundColor: "#ccc",
-    flex: 1,
-  },
-
+  line: { height: 1, backgroundColor: "#ccc", flex: 1 },
   loadMoreText: {
     color: "#0071BA",
     fontWeight: "700",

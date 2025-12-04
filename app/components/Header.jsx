@@ -16,7 +16,7 @@ export default function Header() {
       </View>
 
       <View style={styles.rightSection}>
-        <TouchableOpacity onPress={()=>router.push("/common/seedata")}>
+        <TouchableOpacity onPress={()=>router.push("/common/Inquiryform")}>
         <View style={styles.notification}>
           <Ionicons name="notifications-outline" size={20} color="black" />
         </View>

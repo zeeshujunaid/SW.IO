@@ -8,14 +8,80 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import baseurl from "../../services/config";
 import BackHeader from "../components/Backheader";
 import { useLocalSearchParams } from "expo-router";
+import AutoLocation from "../components/getLocation";
+import { useRouter } from "expo-router";
+import { useState, useContext } from "react";
+import Toast from "react-native-toast-message";
+import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Inquiryform() {
+  const router = useRouter();
+  const { fetchInquiries } = useContext(InquiryContext);
+  const [feedback, setFeedback] = useState("");
+  const [location, setLocation] = useState({ address: "" }); 
   const params = useLocalSearchParams();
   const caseData = params.caseData ? JSON.parse(params.caseData) : null;
 
-  console.log(caseData);
+  const id = caseData?.caseId?._id;
+
+const handellogin = async () => {
+  if (!feedback && !location.address){
+    Toast.show({
+      type:"error",
+      message:"plz fill the feedback form"
+    })
+    return;
+  }
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await fetch(`${baseurl}/api/feedback/${id}/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reviews: feedback,
+          inquiryAddress: location.address,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+         await fetchInquiries();
+      } else {
+        console.log("Login failed:", data);
+        Toast.show({
+          type: "error",
+          text1: "Login Failed",
+          text2: data.message || "Something went wrong",
+        });
+      }
+    } catch (err) {
+      console.log("Login error:", err);
+      Toast.show({
+        type: "error",
+        text1: "Login Error",
+        text2: "Something went wrong. Try again.",
+      });
+    }finally{
+     setLocation({ address: "" });
+       setFeedback(""); 
+      router.replace({
+        pathname: "/(tabs)/Inquirylist",
+        params: { refresh: "true" },
+      });
+    }
+};
+
+  const noOfBoys = caseData.caseId?.saailId?.familyMember?.noOfBoys || 0;
+  const noOfGirls = caseData.caseId?.saailId?.familyMember?.noOfGirls || 0;
+  const totalFamilyMembers = noOfBoys + noOfGirls;
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -23,13 +89,18 @@ export default function Inquiryform() {
     >
       <View style={{ flex: 1 }}>
         <BackHeader />
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <AutoLocation onLocationFetched={(loc) => setLocation(loc)} />
+
           <View style={styles.row}>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Case No</Text>
               <TextInput
                 style={styles.input}
-                pointerEvents="none"
+                editable={false}
                 value={caseData.caseId?.caseNo || ""}
               />
             </View>
@@ -37,7 +108,7 @@ export default function Inquiryform() {
               <Text style={styles.label}>Date</Text>
               <TextInput
                 style={styles.input}
-                pointerEvents="none"
+                editable={false}
                 value={
                   caseData.caseId?.createdAt
                     ? new Date(caseData.caseId.createdAt).toLocaleDateString()
@@ -47,48 +118,47 @@ export default function Inquiryform() {
             </View>
           </View>
 
-          {/* Row 2: Sibling/Other Name */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Sail Name</Text>
             <TextInput
               style={styles.input}
-              pointerEvents="none"
+              editable={false}
               value={caseData.caseId?.saailId?.name || ""}
             />
           </View>
 
-          {/* Row 3: Father/Husband */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Father/Husband Name</Text>
             <TextInput
               style={styles.input}
-              pointerEvents="none"
+              editable={false}
               value={caseData.caseId?.saailId?.father_husbandName || ""}
             />
           </View>
 
-          {/* Row 4: Address */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Address</Text>
             <TextInput
               style={styles.input}
-              pointerEvents="none"
+              editable={false}
               value={caseData.caseId?.saailId?.address || ""}
             />
           </View>
 
-          {/* Row 5: Nearby Place */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Nearby Place</Text>
-            <TextInput style={styles.input} pointerEvents="none" />
+            <TextInput
+              style={styles.input}
+              editable={false}
+              value={location?.address || ""}
+            />
           </View>
 
-          {/* Row 6: Profession */}
           <View style={styles.inputWrapper}>
             <Text style={styles.label}>Profession</Text>
             <TextInput
               style={styles.input}
-              pointerEvents="none"
+              editable={false}
               value={caseData.caseId?.saailId?.profession || ""}
             />
           </View>
@@ -99,35 +169,29 @@ export default function Inquiryform() {
               <Text style={styles.label}>Family members</Text>
               <TextInput
                 style={styles.input}
-                value={
-                  caseData.caseId?.saailId?.familyMember?.total?.toString() ||
-                  "0"
-                }
-                keyboardType="numeric"
-                pointerEvents="none"
+                editable={false}
+                value={totalFamilyMembers.toString()}
               />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Boys</Text>
               <TextInput
                 style={styles.input}
+                editable={false}
                 value={
-                  caseData.caseId?.saailId?.Familymember?.numberofboys
+                  caseData.caseId?.saailId?.familyMember?.noOfBoys?.toString() ||
+                  "0"
                 }
-                keyboardType="numeric"
-                pointerEvents="none"
               />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Girls</Text>
               <TextInput
                 style={styles.input}
-                keyboardType="numeric"
-                pointerEvents="none"
+                editable={false}
                 value={
-                  caseData.caseId?.saailId?.childrenDetails
-                    ?.filter((c) => c.gender === "female")
-                    .length?.toString() || "0"
+                  caseData.caseId?.saailId?.familyMember?.noOfGirls?.toString() ||
+                  "0"
                 }
               />
             </View>
@@ -138,7 +202,7 @@ export default function Inquiryform() {
             <Text style={styles.label}>Landlord Name</Text>
             <TextInput
               style={styles.input}
-              pointerEvents="none"
+              editable={false}
               value={caseData.caseId?.saailId?.landLordName || ""}
             />
           </View>
@@ -149,20 +213,18 @@ export default function Inquiryform() {
               <Text style={styles.label}>Landlord CNIC</Text>
               <TextInput
                 style={styles.input}
+                editable={false}
                 value={caseData.caseId?.saailId?.landLordCnic || ""}
-                keyboardType="numeric"
-                pointerEvents="none"
               />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Rent Amount</Text>
               <TextInput
                 style={styles.input}
+                editable={false}
                 value={
                   caseData.caseId?.saailId?.monthlyExpenses?.toString() || ""
                 }
-                keyboardType="numeric"
-                pointerEvents="none"
               />
             </View>
           </View>
@@ -173,17 +235,16 @@ export default function Inquiryform() {
               <Text style={styles.label}>Income/Salary</Text>
               <TextInput
                 style={styles.input}
-                keyboardType="numeric"
-                pointerEvents="none"
+                editable={false}
+                value={caseData.caseId?.saailId?.salary?.toString() || ""}
               />
             </View>
             <View style={styles.inputWrapper}>
               <Text style={styles.label}>Monthly Expense</Text>
               <TextInput
                 style={styles.input}
+                editable={false}
                 value={caseData.caseId?.saailId?.rentAmount?.toString() || ""}
-                keyboardType="numeric"
-                pointerEvents="none"
               />
             </View>
           </View>
@@ -196,7 +257,7 @@ export default function Inquiryform() {
                 style={styles.input}
                 value={caseData.caseId?.saailId?.salary?.toString() || ""}
                 keyboardType="numeric"
-                pointerEvents="none"
+                editable={false}
               />
             </View>
             <View style={styles.inputWrapper}>
@@ -207,7 +268,7 @@ export default function Inquiryform() {
                   caseData.caseId?.saailId?.monthlyExpenses?.toString() || ""
                 }
                 keyboardType="numeric"
-                pointerEvents="none"
+                editable={false}
               />
             </View>
           </View>
@@ -219,7 +280,7 @@ export default function Inquiryform() {
               style={styles.input}
               value={caseData.caseId?.saailId?.amountNeeded?.toString() || ""}
               keyboardType="numeric"
-              pointerEvents="none"
+              editable={false}
             />
           </View>
 
@@ -229,7 +290,7 @@ export default function Inquiryform() {
               style={styles.input}
               value={caseData.caseId?.saailId?.anyKindOfDomesticProblem || ""}
               keyboardType="numeric"
-              pointerEvents="none"
+              editable={false}
             />
           </View>
 
@@ -240,10 +301,13 @@ export default function Inquiryform() {
               style={[styles.input, { height: 80 }]}
               multiline
               placeholder="تفصیلی جواب"
+              value={feedback}
+              onChangeText={setFeedback}
             />
           </View>
 
-          <TouchableOpacity style={styles.saveButton}>
+          {/* Save Button */}
+          <TouchableOpacity style={styles.saveButton} onPress={handellogin}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -259,12 +323,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     backgroundColor: "#fff",
   },
-  backcontainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-  },
   row: {
     flexDirection: "row",
     gap: 12,
@@ -272,15 +330,16 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flex: 1,
     gap: 4,
+    marginBottom: 12,
   },
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#rgba(98, 98, 98, 0.6)",
+    color: "rgba(98, 98, 98, 0.6)",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#rgba(0, 0, 0, 0.12)",
+    borderColor: "rgba(0, 0, 0, 0.12)",
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -291,7 +350,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 90,
     alignSelf: "flex-end",
-    backgroundColor: "#rgba(137, 196, 65, 1)",
+    backgroundColor: "rgba(137, 196, 65, 1)",
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
@@ -300,9 +359,5 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "700",
     fontSize: 16,
-  },
-  boldlabel: {
-    color: "#000",
-    fontWeight: "bold",
   },
 });

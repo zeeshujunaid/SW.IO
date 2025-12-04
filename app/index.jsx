@@ -8,11 +8,12 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // <- AsyncStorage import
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { baseurl } from "../services/config";
 
 export default function Index() {
@@ -20,6 +21,7 @@ export default function Index() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handellogin = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,44 +48,36 @@ export default function Index() {
       return;
     }
 
-    // API call
+    setLoading(true);
     try {
       const response = await fetch(`${baseurl}/api/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log(data);
-      await AsyncStorage.setItem("userdata", JSON.stringify(data));
+
       if (!response.ok) {
         Toast.show({
           type: "error",
           text1: "Login Failed",
           text2: data.message || "Invalid credentials",
         });
+        setLoading(false);
         return;
       }
 
-      // Login ke baad
+      await AsyncStorage.setItem("userdata", JSON.stringify(data));
       const token = data?.data?.accessToken;
-      const id = data?.data?.user?._id; // <- correct path
+      const id = data?.data?.user?._id;
 
       if (token && id) {
         await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("id", id);
-        console.log("Token and id saved successfully", token, id);
-      } else {
-        console.log("Token not found in response");
       }
-      Toast.show({
-        type: "success",
-        text1: "Login Success",
-      });
 
+      Toast.show({ type: "success", text1: "Login Success" });
       router.replace("/Loader");
     } catch (err) {
       console.log("Login error:", err);
@@ -92,6 +86,8 @@ export default function Index() {
         text1: "Login Error",
         text2: "Something went wrong. Try again.",
       });
+    } finally {
+      setLoading(false);
     }
 
     setEmail("");
@@ -161,27 +157,19 @@ export default function Index() {
               </View>
             )}
 
-            <TouchableOpacity onPress={handellogin}>
+            <TouchableOpacity onPress={handellogin} disabled={loading}>
               <View style={styles.button}>
-                <Text
-                  style={{ color: "#fff", fontWeight: "700", fontSize: 18 }}
-                >
-                  Login
-                </Text>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text
+                    style={{ color: "#fff", fontWeight: "700", fontSize: 18 }}
+                  >
+                    Login
+                  </Text>
+                )}
               </View>
             </TouchableOpacity>
-
-            <View>
-              <Text style={styles.bottomText}>
-                Don't have an account?{" "}
-                <Text
-                  style={styles.signupText}
-                  onPress={() => router.push("/(tabs)/Homescreen")}
-                >
-                  Signup
-                </Text>
-              </Text>
-            </View>
           </View>
         </View>
       </ScrollView>
@@ -217,9 +205,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: "90%",
   },
-  form: {
-    width: "100%",
-  },
+  form: { width: "100%" },
   label: {
     fontSize: 15,
     marginBottom: 6,
@@ -251,10 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 10,
   },
-  errorText: {
-    color: "#EF4444",
-    paddingLeft: 10,
-  },
+  errorText: { color: "#EF4444", paddingLeft: 10 },
   button: {
     marginTop: 30,
     backgroundColor: "#89C441",
@@ -267,8 +250,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#000000b3",
   },
-  signupText: {
-    color: "#0071BA",
-    fontWeight: "600",
-  },
+  signupText: { color: "#0071BA", fontWeight: "600" },
 });

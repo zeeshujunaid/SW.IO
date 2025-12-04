@@ -86,6 +86,20 @@ export default function Profile() {
           <Text style={styles.value}>{userdata?.data?.user?.address}</Text>
         </View>
       </View>
+
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={async () => {
+          try {
+            await AsyncStorage.clear(); 
+            router.replace("/"); 
+          } catch (error) {
+            console.log("Logout error:", error);
+          }
+        }}
+      >
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -120,4 +134,18 @@ const styles = StyleSheet.create({
   },
   label: { fontWeight: "600", color: "#555", fontSize: 14, flex: 1 },
   value: { fontWeight: "700", color: "#000", fontSize: 14, flex: 2 },
+  logoutButton: {
+    marginTop: 30,
+    backgroundColor: "#EF4444", 
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignSelf: "center",
+    alignItems: "center",
+  },
+  logoutButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
 });

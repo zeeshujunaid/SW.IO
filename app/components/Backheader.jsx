@@ -1,10 +1,31 @@
 import { Text, View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
+import { useState, useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function BackHeader() {
   const router = useRouter();
+  const [profileImage, setProfileImage] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchProfileImage = async () => {
+        try {
+          const value = await AsyncStorage.getItem("userdata");
+          if (value !== null) {
+            const userdata = JSON.parse(value);
+            const img = userdata?.data?.user?.image?.fileUrl;
+            if (img) setProfileImage(img);
+          }
+        } catch (e) {
+          console.log("Error fetching profile image from AsyncStorage", e);
+        }
+      };
+      fetchProfileImage();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -29,7 +50,11 @@ export default function BackHeader() {
 
         <TouchableOpacity onPress={() => router.push("/(tabs)/Profile")}>
           <Image
-            source={require("../../assets/images/saillnew.png")}
+            source={
+              profileImage
+                ? { uri: profileImage }
+                : require("../../assets/images/profileimg.avif")
+            }
             style={styles.profileImage}
           />
         </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator, // <- imported loader
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -22,18 +23,20 @@ import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Activity() {
   const router = useRouter();
-  const { inquiries, fetchInquiries } = useContext(InquiryContext); 
+  const { inquiries, fetchInquiries } = useContext(InquiryContext);
   const [searchText, setSearchText] = useState("");
-
-  console.log(inquiries);
-
+  const [loading, setLoading] = useState(false); 
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchInquiries();
+      const fetchData = async () => {
+        setLoading(true);
+        await fetchInquiries();
+        setLoading(false);
+      };
+      fetchData();
     }, [])
   );
-
 
   const filteredCases = inquiries
     .filter((item) => item.status === "Completed")
@@ -54,114 +57,145 @@ export default function Activity() {
       <View style={styles.container}>
         <Header />
 
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 90 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Header & Search */}
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerTitle}>Orders History</Text>
-
-            <View style={styles.searchWrapper}>
-              <Ionicons name="search" size={20} color="#777" />
-              <TextInput
-                placeholder="Search..."
-                placeholderTextColor="#777"
-                style={styles.searchInput}
-                value={searchText}
-                onChangeText={setSearchText}
-              />
-            </View>
+        {loading ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 50,
+            }}
+          >
+            <ActivityIndicator size="large" color="#8dc63f" />
           </View>
-          {filteredCases.map((item, index) => (
-            <View key={item._id} style={styles.card}>
-              <View style={styles.caseRow}>
-                <Text style={styles.caseNumber}>
-                  Case #{(index + 1).toString().padStart(2, "0")}
-                </Text>
-              </View>
+        ) : filteredCases.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 50,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: "#777" }}>
+              No Completed Cases
+            </Text>
+          </View>
+        ) : (
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 90 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Header & Search */}
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerTitle}>Orders History</Text>
 
-              <View style={styles.row}>
-                <View style={styles.left}>
-                  <FontAwesome name="hashtag" size={16} color="#8dc63f" />
-                  <Text style={styles.label}>Case Number:</Text>
-                </View>
-                <Text style={styles.value}>{item.caseId?.caseNo || "-"}</Text>
+              <View style={styles.searchWrapper}>
+                <Ionicons name="search" size={20} color="#777" />
+                <TextInput
+                  placeholder="Search..."
+                  placeholderTextColor="#777"
+                  style={styles.searchInput}
+                  value={searchText}
+                  onChangeText={setSearchText}
+                />
               </View>
-
-              <View style={styles.row}>
-                <View style={styles.left}>
-                  <MaterialCommunityIcons
-                    name="calendar-clock"
-                    size={16}
-                    color="#8dc63f"
-                  />
-                  <Text style={styles.label}>Date:</Text>
-                </View>
-                <Text style={styles.value}>
-                  {new Date(item.createdAt).toLocaleDateString()}
-                </Text>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.left}>
-                  <Feather name="user" size={16} color="#8dc63f" />
-                  <Text style={styles.label}>Saail Name:</Text>
-                </View>
-                <Text style={styles.value}>
-                  {item.caseId?.saailId?.name || "-"}
-                </Text>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.left}>
-                  <Entypo name="location-pin" size={18} color="#8dc63f" />
-                  <Text style={styles.label}>Area:</Text>
-                </View>
-                <Text style={styles.value}>
-                  {item.caseId?.saailId?.area || "-"}
-                </Text>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.left}>
-                  <MaterialCommunityIcons
-                    name="home-map-marker"
-                    size={18}
-                    color="#8dc63f"
-                  />
-                  <Text style={styles.label}>Address:</Text>
-                </View>
-                <Text style={styles.value}>
-                  {item.caseId?.saailId?.address || "-"}
-                </Text>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.left}>
-                  <MaterialCommunityIcons
-                    name="hand-heart"
-                    size={18}
-                    color="#8dc63f"
-                  />
-                  <Text style={styles.label}>Required Help:</Text>
-                </View>
-                <Text style={styles.value}>
-                  {item.caseId?.saailId?.helpFor || "-"}
-                </Text>
-              </View>
-
-              <TouchableOpacity style={styles.completebutton}>
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
-                >
-                  <AntDesign name="check-circle" size={20} color="#fff" />
-                  <Text style={styles.buttonText}>Case Completed</Text>
-                </View>
-              </TouchableOpacity>
             </View>
-          ))}
-        </ScrollView>
+
+            {filteredCases.map((item, index) => (
+              <View key={item._id} style={styles.card}>
+                <View style={styles.caseRow}>
+                  <Text style={styles.caseNumber}>
+                    Case #{(index + 1).toString().padStart(2, "0")}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <View style={styles.left}>
+                    <FontAwesome name="hashtag" size={16} color="#8dc63f" />
+                    <Text style={styles.label}>Case Number:</Text>
+                  </View>
+                  <Text style={styles.value}>{item.caseId?.caseNo || "-"}</Text>
+                </View>
+
+                <View style={styles.row}>
+                  <View style={styles.left}>
+                    <MaterialCommunityIcons
+                      name="calendar-clock"
+                      size={16}
+                      color="#8dc63f"
+                    />
+                    <Text style={styles.label}>Date:</Text>
+                  </View>
+                  <Text style={styles.value}>
+                    {new Date(item.createdAt).toLocaleDateString()}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <View style={styles.left}>
+                    <Feather name="user" size={16} color="#8dc63f" />
+                    <Text style={styles.label}>Saail Name:</Text>
+                  </View>
+                  <Text style={styles.value}>
+                    {item.caseId?.saailId?.name || "-"}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <View style={styles.left}>
+                    <Entypo name="location-pin" size={18} color="#8dc63f" />
+                    <Text style={styles.label}>Area:</Text>
+                  </View>
+                  <Text style={styles.value}>
+                    {item.caseId?.saailId?.area || "-"}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <View style={styles.left}>
+                    <MaterialCommunityIcons
+                      name="home-map-marker"
+                      size={18}
+                      color="#8dc63f"
+                    />
+                    <Text style={styles.label}>Address:</Text>
+                  </View>
+                  <Text style={styles.value}>
+                    {item.caseId?.saailId?.address || "-"}
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <View style={styles.left}>
+                    <MaterialCommunityIcons
+                      name="hand-heart"
+                      size={18}
+                      color="#8dc63f"
+                    />
+                    <Text style={styles.label}>Required Help:</Text>
+                  </View>
+                  <Text style={styles.value}>
+                    {item.caseId?.saailId?.helpFor || "-"}
+                  </Text>
+                </View>
+
+                <TouchableOpacity style={styles.completebutton}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <AntDesign name="check-circle" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>Case Completed</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        )}
       </View>
     </KeyboardAvoidingView>
   );
@@ -193,7 +227,6 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, marginLeft: 10, fontSize: 16, color: "#000" },
   caseRow: {
     flexDirection: "row",
-    // justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
   },

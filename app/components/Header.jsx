@@ -48,7 +48,7 @@ export default function Header() {
             source={
               profileImage
                 ? { uri: profileImage }
-                : require("../../assets/images/saillnew.png")
+                : require("../../assets/images/profileimg.avif")
             }
             style={styles.profileImage}
           />

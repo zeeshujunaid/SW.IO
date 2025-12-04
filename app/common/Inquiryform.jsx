@@ -7,6 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator, // <- imported ActivityIndicator
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseurl from "../../services/config";
@@ -22,21 +23,33 @@ export default function Inquiryform() {
   const router = useRouter();
   const { fetchInquiries } = useContext(InquiryContext);
   const [feedback, setFeedback] = useState("");
-  const [location, setLocation] = useState({ address: "" }); 
+  const [location, setLocation] = useState({ address: "" });
+  const [loading, setLoading] = useState(false); // <- loader state
   const params = useLocalSearchParams();
   const caseData = params.caseData ? JSON.parse(params.caseData) : null;
 
   const id = caseData?.caseId?._id;
 
-const handellogin = async () => {
-  if (!feedback && !location.address){
+  const handellogin = async () => {
+  if (!feedback) {
     Toast.show({
-      type:"error",
-      message:"plz fill the feedback form"
-    })
+      type: "error",
+      text1: "Error",
+      text2: "Please provide feedback",
+    });
+    return;
+  }
+
+  if (!location.address) {
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Location is required",
+    });
     return;
   }
     try {
+      setLoading(true); 
       const token = await AsyncStorage.getItem("token");
       const response = await fetch(`${baseurl}/api/feedback/${id}/create`, {
         method: "POST",
@@ -52,31 +65,31 @@ const handellogin = async () => {
 
       const data = await response.json();
       if (response.ok) {
-         await fetchInquiries();
+        await fetchInquiries();
       } else {
-        console.log("Login failed:", data);
         Toast.show({
           type: "error",
-          text1: "Login Failed",
+          text1: "Failed",
           text2: data.message || "Something went wrong",
         });
       }
     } catch (err) {
-      console.log("Login error:", err);
+      console.log("Error:", err);
       Toast.show({
         type: "error",
-        text1: "Login Error",
+        text1: "Error",
         text2: "Something went wrong. Try again.",
       });
-    }finally{
-     setLocation({ address: "" });
-       setFeedback(""); 
+    } finally {
+      setLoading(false); // <- stop loader
+      setLocation({ address: "" });
+      setFeedback("");
       router.replace({
         pathname: "/(tabs)/Inquirylist",
         params: { refresh: "true" },
       });
     }
-};
+  };
 
   const noOfBoys = caseData.caseId?.saailId?.familyMember?.noOfBoys || 0;
   const noOfGirls = caseData.caseId?.saailId?.familyMember?.noOfGirls || 0;
@@ -300,8 +313,16 @@ const handellogin = async () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.saveButton} onPress={handellogin}>
-            <Text style={styles.saveButtonText}>Save</Text>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handellogin}
+            disabled={loading} // <- disable button while loading
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" /> // <- loader
+            ) : (
+              <Text style={styles.saveButtonText}>Save</Text>
+            )}
           </TouchableOpacity>
         </ScrollView>
       </View>

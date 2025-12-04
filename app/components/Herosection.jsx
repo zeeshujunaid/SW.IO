@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { baseurl } from "../../services/config";
-
+import AntDesign from "@expo/vector-icons/AntDesign";
 export default function Herosection() {
   const [stats, setStats] = useState({ active: 0, approved: 0, pendings: 0 });
 
@@ -59,7 +59,6 @@ export default function Herosection() {
         </View>
       </View>
 
-
       <View style={styles.bottomRow}>
         <View style={styles.bottomCard}>
           <View style={styles.bottomCardHeader}>
@@ -79,10 +78,22 @@ export default function Herosection() {
 
         <View style={styles.bottomCard}>
           <View style={styles.bottomCardHeader}>
-            <Image
-              source={require("../../assets/images/Featuredicon.png")}
-              style={styles.pendingIcon}
-            />
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 18,
+                backgroundColor: "#rgba(253, 126, 20, 0.1)",
+                height: 40,
+                width: 40,
+              }}
+            >
+              <AntDesign
+                name="exclamation-circle"
+                size={24}
+                color="#rgba(253, 126, 20, 1)"
+              />
+            </View>
             <Text style={styles.bottomCardTitle}>Pending</Text>
           </View>
 

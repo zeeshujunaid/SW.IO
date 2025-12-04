@@ -78,7 +78,6 @@ export default function Inquirylist() {
 
       const resData = await response.json();
       const casesData = Array.isArray(resData.data) ? resData.data : [];
-      console.log("casesdata",casesData);
 
       if (resData.pagination) {
         setHasMore(

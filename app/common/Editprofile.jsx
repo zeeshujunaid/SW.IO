@@ -6,23 +6,98 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import Foundation from "@expo/vector-icons/Foundation";
 import Header from "../components/Backheader";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState, useEffect } from "react";
+import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import baseurl from "../../services/config";
 
 export default function Editprofile() {
   const router = useRouter();
-  const params = useLocalSearchParams(); // correct hook
+  const params = useLocalSearchParams();
   const [userData, setUserData] = useState(null);
+  console.log("userdata=>",userData);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [cnic, setCnic] = useState("");
   const [address, setAddress] = useState("");
+  const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
+  // Pick image from gallery & upload immediately
+  const pickImage = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert("Permission denied!");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const selectedUri = result.assets[0].uri;
+        setImage(selectedUri); 
+
+        try {
+          setUploading(true);
+          const token = await AsyncStorage.getItem("token");
+          const userId = userData?._id;
+
+          const formData = new FormData();
+          formData.append("file", {
+            uri: selectedUri,
+            type: "image/jpeg",
+            name: "photo.jpg",
+          });
+          formData.append("userId", userId);
+
+          const response = await fetch(`${baseurl}/api/imag/upload-single`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const text = await response.text();
+            console.log("Upload failed response:", text);
+            throw new Error(`Upload failed with status ${response.status}`);
+          }
+
+          const resultData = await response.json();
+          console.log("Image uploaded:", resultData);
+
+          // Update UI with backend returned path
+          if (resultData?.image?.fileUrl) {
+            setImage(resultData.image.fileUrl);
+          }
+        } catch (uploadError) {
+          console.log("Image upload failed:", uploadError);
+          alert("Image upload failed!");
+        } finally {
+          setUploading(false);
+        }
+      }
+    } catch (error) {
+      console.log("Image pick error:", error);
+    }
+  };
+
+
+  // Load user data from params
   useEffect(() => {
     if (params.user) {
       const parsed = JSON.parse(params.user);
@@ -34,6 +109,7 @@ export default function Editprofile() {
     }
   }, [params.user]);
 
+  // Save updated data
   const handleSave = async () => {
     try {
       const updatedUser = {
@@ -42,21 +118,36 @@ export default function Editprofile() {
         email,
         cnicNo: cnic,
         address,
+        image: image ? { fileUrl: image } : userData.image, 
       };
 
+      // Save to AsyncStorage
       const storedData = await AsyncStorage.getItem("userdata");
       const parsed = JSON.parse(storedData);
       parsed.data.user = updatedUser;
-
       await AsyncStorage.setItem("userdata", JSON.stringify(parsed));
+      const userId = userData?._id;
+      console.log(userId);
+      
+      const token = await AsyncStorage.getItem("token");
+      await fetch(`${baseurl}/api/user/${userId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+      });
 
-      router.back(); // back to Profile
+      router.back(); 
     } catch (err) {
       console.log("Error updating user data:", err);
+      alert("Failed to save changes!");
     }
   };
 
-  if (!userData) return null; // wait for data
+
+  if (!userData) return null;
 
   return (
     <ScrollView
@@ -69,12 +160,25 @@ export default function Editprofile() {
       <View style={styles.profileWrapper}>
         <View style={styles.profileRow}>
           <Image
-            source={require("../../assets/images/saillnew.png")}
+            source={
+              image
+                ? { uri: image }
+                : userData?.image?.fileUrl
+                ? { uri: userData.image.fileUrl }
+                : require("../../assets/images/saillnew.png")
+            }
             style={styles.profileImage}
-            resizeMode="contain"
+            resizeMode="cover"
           />
-          <TouchableOpacity style={styles.cameraIconWrapper}>
-            <Foundation name="camera" size={24} color="#fff" />
+          <TouchableOpacity
+            style={styles.cameraIconWrapper}
+            onPress={pickImage}
+          >
+            {uploading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Foundation name="camera" size={24} color="#fff" />
+            )}
           </TouchableOpacity>
         </View>
       </View>

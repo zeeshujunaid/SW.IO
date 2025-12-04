@@ -1,24 +1,25 @@
 {
   "expo": {
-    "name": "SW.IO",
-    "slug": "SW.IO",
+    "name": "SW-IO",
+    "slug": "SW-IO",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/saylanilogo.png",  // App icon
+    "icon": "./assets/images/saylanilogo.png",
     "scheme": "swio",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/images/saylanilogo.png"  // optional, iOS specific
+      "icon": "./assets/images/saylanilogo.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/saylanilogo.png",  // main logo
+        "foregroundImage": "./assets/images/saylanilogo.png",
         "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.zeeshan.swio"
     },
     "web": {
       "output": "static",
@@ -29,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/saylanilogo.png", // extension required
+          "image": "./assets/images/saylanilogo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -42,6 +43,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b646c1cb-b3a0-474c-8c31-3f0586afdf08"
+      }
     }
   }
 }

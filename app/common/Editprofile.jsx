@@ -20,7 +20,6 @@ export default function Editprofile() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const [userData, setUserData] = useState(null);
-  console.log("userdata=>",userData);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -121,7 +120,6 @@ export default function Editprofile() {
       parsed.data.user = updatedUser;
       await AsyncStorage.setItem("userdata", JSON.stringify(parsed));
       const userId = userData?._id;
-      console.log(userId);
       
       const token = await AsyncStorage.getItem("token");
       await fetch(`${baseurl}/api/user/${userId}`, {

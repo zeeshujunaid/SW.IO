@@ -49,7 +49,7 @@ export default function Homescreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  fixedHeader: { zIndex: 1, backgroundColor: "#fff", paddingBottom: 10 },
+  fixedHeader: { zIndex: 1, backgroundColor: "#fff", paddingBottom: 5,marginTop:15, },
   searchContainer: {
     marginHorizontal: 20,
     marginTop: 10,

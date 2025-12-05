@@ -121,7 +121,7 @@ export default function Inquirylist() {
           <View style={styles.searchWrapper}>
             <Ionicons name="search" size={20} color="#777" />
             <TextInput
-              placeholder="Search..."
+              placeholder="Search By Name,Area,Helpfor"
               placeholderTextColor="#777"
               style={styles.searchInput}
               value={searchText}
@@ -137,7 +137,16 @@ export default function Inquirylist() {
         )}
 
         {filteredCases.map((item, index) => (
-          <View key={item._id} style={styles.card}>
+          <View
+            key={item._id}
+            style={[
+              styles.card,
+              {
+                borderColor: item.status === "Completed" ? "green" : "red",
+                // color: item.status === "Completed" ? "rgba(252, 223, 223, 0.33)" : "red",
+              },
+            ]}
+          >
             <View style={styles.caseRow}>
               <Text style={styles.caseNumber}>
                 Case # {(index + 1).toString().padStart(2, "0")}
@@ -270,7 +279,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#333",
+    color: "red",
     flex: 1,
     textAlign: "right",
   },

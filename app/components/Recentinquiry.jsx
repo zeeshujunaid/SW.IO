@@ -16,7 +16,7 @@ export default function Recentinquiry({ searchText }) {
   const filteredCases = cases.filter((item) => {
     const lower = searchText.toLowerCase();
     return (
-      (item.caseId.inquiryPersonName || "").toLowerCase().includes(lower) ||
+      (item.caseId.saailId.name || "").toLowerCase().includes(lower) ||
       (item.caseId.area || "").toLowerCase().includes(lower) ||
       (item.caseId.help || "").toLowerCase().includes(lower)
     );
@@ -32,7 +32,16 @@ export default function Recentinquiry({ searchText }) {
       </View>
 
       {filteredCases.map((item, index) => (
-        <View key={item._id} style={styles.card}>
+        <View
+          key={item._id}
+          style={[
+            styles.card,
+            {
+              borderColor: item.status === "Completed" ? "green" : "red",
+              // color: item.status === "Completed" ? "rgba(252, 223, 223, 0.33)" : "red",
+            },
+          ]}
+        >
           <Text style={styles.caseNumber}>
             Case #{(index + 1).toString().padStart(2, "0")}
           </Text>
@@ -42,7 +51,16 @@ export default function Recentinquiry({ searchText }) {
               <FontAwesome name="hashtag" size={16} color="#0071BA" />
               <Text style={styles.label}>Case Number:</Text>
             </View>
-            <Text style={styles.value}>{item.caseId.caseNo}</Text>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: item.status === "Completed" ? "green" : "red",
+                },
+              ]}
+            >
+              {item.caseId.caseNo}
+            </Text>
           </View>
 
           <View style={styles.row}>
@@ -54,7 +72,14 @@ export default function Recentinquiry({ searchText }) {
               />
               <Text style={styles.label}>Date:</Text>
             </View>
-            <Text style={styles.value}>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: item.status === "Completed" ? "green" : "red",
+                },
+              ]}
+            >
               {new Date(item.caseId.createdAt).toLocaleDateString()}
             </Text>
           </View>
@@ -64,7 +89,14 @@ export default function Recentinquiry({ searchText }) {
               <Feather name="user" size={16} color="#0071BA" />
               <Text style={styles.label}>Saail Name:</Text>
             </View>
-            <Text style={styles.value}>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: item.status === "Completed" ? "green" : "red",
+                },
+              ]}
+            >
               {item.caseId?.saailId?.name || "-"}
             </Text>
           </View>
@@ -74,7 +106,14 @@ export default function Recentinquiry({ searchText }) {
               <Entypo name="location-pin" size={18} color="#0071BA" />
               <Text style={styles.label}>Area:</Text>
             </View>
-            <Text style={styles.value}>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: item.status === "Completed" ? "green" : "red",
+                },
+              ]}
+            >
               {item.caseId?.saailId?.area || "-"}
             </Text>
           </View>
@@ -88,7 +127,14 @@ export default function Recentinquiry({ searchText }) {
               />
               <Text style={styles.label}>Address:</Text>
             </View>
-            <Text style={styles.value}>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: item.status === "Completed" ? "green" : "red",
+                },
+              ]}
+            >
               {item.caseId?.saailId?.address || "-"}
             </Text>
           </View>
@@ -102,7 +148,14 @@ export default function Recentinquiry({ searchText }) {
               />
               <Text style={styles.label}>Help:</Text>
             </View>
-            <Text style={styles.value}>
+            <Text
+              style={[
+                styles.value,
+                {
+                  color: item.status === "Completed" ? "green" : "red",
+                },
+              ]}
+            >
               {item.caseId?.saailId?.helpFor || "-"}
             </Text>
           </View>

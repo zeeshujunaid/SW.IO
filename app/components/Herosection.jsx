@@ -7,7 +7,7 @@ import {
 import { useState, useEffect } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { baseurl } from "../../services/config";
+import baseurl  from "../../services/config";
 import AntDesign from "@expo/vector-icons/AntDesign";
 export default function Herosection() {
   const [stats, setStats] = useState({ active: 0, approved: 0, pendings: 0 });
@@ -18,20 +18,20 @@ export default function Herosection() {
         const token = await AsyncStorage.getItem("token");
         if (!token) throw new Error("Token not found");
 
-        const response = await fetch(`${baseurl}/api/dashboard/stats`, {
+        const response = await fetch(`${baseurl}/api/dashboard/inqiry-stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) throw new Error("Failed to fetch stats");
 
+
         const data = await response.json();
-        if (data.success && data.stats) {
+        if (data.success && data) {
           setStats({
-            active: data.stats.active,
-            approved: data.stats.approved,
-            pendings: data.stats.pendings,
+            active: data.data.totalInquiry,
+            approved: data.data.complete,
+            pendings: data.data.pending,
           });
-          console.log("Stats fetched:", data.stats);
         }
       } catch (err) {
         console.log("Error fetching stats:", err);

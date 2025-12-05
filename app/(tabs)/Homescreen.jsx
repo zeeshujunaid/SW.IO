@@ -26,7 +26,7 @@ export default function Homescreen() {
           <View style={styles.searchContainer}>
             <Ionicons name="search" size={20} color="#777" />
             <TextInput
-              placeholder="Search..."
+              placeholder="Search by Name,Area,Case Number"
               placeholderTextColor="#777"
               style={styles.searchInput}
               value={searchText}

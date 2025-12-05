@@ -7,7 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator, // <- imported ActivityIndicator
+  ActivityIndicator, 
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseurl from "../../services/config";
@@ -17,10 +17,12 @@ import AutoLocation from "../components/getLocation";
 import { useRouter } from "expo-router";
 import { useState, useContext } from "react";
 import Toast from "react-native-toast-message";
+import { useRef } from "react";
 import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Inquiryform() {
   const router = useRouter();
+  const locationRef = useRef();
   const { fetchInquiries } = useContext(InquiryContext);
   const [feedback, setFeedback] = useState("");
   const [location, setLocation] = useState({ address: "" });
@@ -46,7 +48,7 @@ export default function Inquiryform() {
       text1: "Error",
       text2: "Location is required",
     });
-    return;
+    locationRef.current?.retryLocation();
   }
     try {
       setLoading(true); 
@@ -81,12 +83,12 @@ export default function Inquiryform() {
         text2: "Something went wrong. Try again.",
       });
     } finally {
-      setLoading(false); // <- stop loader
+      setLoading(false); 
       setLocation({ address: "" });
       setFeedback("");
       router.replace({
-        pathname: "/(tabs)/Inquirylist",
-        params: { refresh: "true" },
+        pathname: "/Loader",
+        // params: { refresh: "true" },
       });
     }
   };
@@ -106,7 +108,10 @@ export default function Inquiryform() {
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
-          <AutoLocation onLocationFetched={(loc) => setLocation(loc)} />
+          <AutoLocation
+            onLocationFetched={(loc) => setLocation(loc)}
+            ref={locationRef}
+          />
 
           <View style={styles.row}>
             <View style={styles.inputWrapper}>

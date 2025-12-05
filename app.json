@@ -2,7 +2,7 @@
   "expo": {
     "name": "SW-IO",
     "slug": "SW-IO",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/SW-Inquiry.png",
     "scheme": "swio",

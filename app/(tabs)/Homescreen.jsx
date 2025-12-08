@@ -22,7 +22,7 @@ export default function Homescreen() {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      await fetchInquiries(); // Context me API call
+      await fetchInquiries(); 
     } catch (error) {
       console.log("Refresh error:", error);
     } finally {

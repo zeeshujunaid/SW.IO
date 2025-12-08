@@ -21,12 +21,12 @@ export default function Recentinquiry({ searchText, refreshTrigger }) {
   useEffect(() => {
     if (inquiries && inquiries.length) {
       const feedbackCases = inquiries
-        .filter((item) => item.status === "Completed")
+        .filter((item) => item.status === "Pending")
         .slice(0, 3);
 
       setCases(feedbackCases);
     } else {
-      setCases([]); 
+      setCases([]);
     }
   }, [inquiries]);
 
@@ -44,7 +44,7 @@ export default function Recentinquiry({ searchText, refreshTrigger }) {
       {/* Heading always visible */}
       <View style={styles.heading}>
         <Text style={styles.headingText}>Recent Inquiries</Text>
-        <TouchableOpacity onPress={() => router.push("/(tabs)/Activity")}>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/Inquirylist")}>
           <Text style={styles.viewAllText}>View All</Text>
         </TouchableOpacity>
       </View>
@@ -72,9 +72,9 @@ export default function Recentinquiry({ searchText, refreshTrigger }) {
               { borderColor: item.status === "Completed" ? "green" : "red" },
             ]}
           >
-            <Text style={styles.caseNumber}>
-              Case #{(index + 1).toString().padStart(2, "0")}
-            </Text>
+              <Text style={styles.caseNumber}>
+                Case #{(index + 1).toString().padStart(2, "0")}
+              </Text>
 
             {/* Case Number */}
             <View style={styles.row}>

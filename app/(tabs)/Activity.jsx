@@ -9,7 +9,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator, // <- imported loader
+  ActivityIndicator, 
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -23,21 +23,11 @@ import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Activity() {
   const router = useRouter();
-  const { inquiries, fetchInquiries } = useContext(InquiryContext);
+  const { inquiries } = useContext(InquiryContext);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false); 
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchData = async () => {
-        setLoading(true);
-        await fetchInquiries();
-        setLoading(false);
-      };
-      fetchData();
-    }, [])
-  );
-
+  
   const filteredCases = inquiries
     .filter((item) => item.status === "Completed")
     .filter((item) => {
@@ -56,6 +46,21 @@ export default function Activity() {
     >
       <View style={styles.container}>
         <Header />
+          {/* Header & Search */}
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerTitle}>Orders History</Text>
+
+            <View style={styles.searchWrapper}>
+              <Ionicons name="search" size={20} color="#777" />
+              <TextInput
+                placeholder="Search By Name,Area,Helpfor"
+                placeholderTextColor="#777"
+                style={styles.searchInput}
+                value={searchText}
+                onChangeText={setSearchText}
+              />
+            </View>
+          </View>
 
         {loading ? (
           <View
@@ -71,10 +76,8 @@ export default function Activity() {
         ) : filteredCases.length === 0 ? (
           <View
             style={{
-              flex: 1,
-              justifyContent: "center",
+              paddingTop:20,
               alignItems: "center",
-              marginTop: 50,
             }}
           >
             <Text style={{ fontSize: 16, color: "#777" }}>
@@ -86,21 +89,6 @@ export default function Activity() {
             contentContainerStyle={{ paddingBottom: 90 }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Header & Search */}
-            <View style={styles.headerContainer}>
-              <Text style={styles.headerTitle}>Orders History</Text>
-
-              <View style={styles.searchWrapper}>
-                <Ionicons name="search" size={20} color="#777" />
-                <TextInput
-                  placeholder="Search By Name,Area,Helpfor"
-                  placeholderTextColor="#777"
-                  style={styles.searchInput}
-                  value={searchText}
-                  onChangeText={setSearchText}
-                />
-              </View>
-            </View>
 
             {filteredCases.map((item, index) => (
               <View

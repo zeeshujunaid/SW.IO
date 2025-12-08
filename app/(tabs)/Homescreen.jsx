@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {
   View,
   ScrollView,
@@ -6,14 +6,29 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Header from "../components/Header";
 import Herosection from "../components/Herosection";
 import Recentinquiry from "../components/Recentinquiry";
+import { InquiryContext } from "../context/Inquirycontext";
 
 export default function Homescreen() {
   const [searchText, setSearchText] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const { loading, fetchInquiries } = useContext(InquiryContext);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchInquiries(); // Context me API call
+    } catch (error) {
+      console.log("Refresh error:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -38,8 +53,18 @@ export default function Homescreen() {
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#0071BA"]}
+              tintColor="#0071BA"
+              title="Refreshing..."
+              titleColor="#0071BA"
+            />
+          }
         >
-          <Herosection />
+          <Herosection refreshing={refreshing} />
           <Recentinquiry searchText={searchText} />
         </ScrollView>
       </View>
@@ -49,7 +74,12 @@ export default function Homescreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  fixedHeader: { zIndex: 1, backgroundColor: "#fff", paddingBottom: 5,marginTop:15, },
+  fixedHeader: {
+    zIndex: 1,
+    backgroundColor: "#fff",
+    paddingBottom: 5,
+    marginTop: 15,
+  },
   searchContainer: {
     marginHorizontal: 20,
     marginTop: 10,

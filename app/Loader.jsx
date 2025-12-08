@@ -4,10 +4,11 @@ import { useRouter } from "expo-router";
 import { baseurl } from "../services/config";
 import { InquiryContext } from "./context/Inquirycontext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
 export default function Logoanimation() {
   const router = useRouter();
-  const { setInquiries, setLoading, setError } = useContext(InquiryContext);
+  const { setInquiries, setLoading } = useContext(InquiryContext);
 
   const slideAnim = useRef(new Animated.Value(200)).current;
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -36,14 +37,17 @@ export default function Logoanimation() {
         setDataLoaded(true);
       } catch (err) {
         console.log("Error fetching inquiries:", err);
-        setError(err);
+       Toast.show({
+        type:Error,
+        message:"something went wrong",
+       })
         setLoading(false);
       }
     };
 
     Animated.timing(slideAnim, {
       toValue: -39,
-      duration: 800,
+      duration: 200,
       easing: Easing.out(Easing.ease),
       useNativeDriver: false,
     }).start();

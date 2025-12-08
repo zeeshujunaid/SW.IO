@@ -39,7 +39,7 @@ export default function Inquirylist() {
   );
 
   useEffect(() => {
-    const pending = cases.filter((item) => !item.caseId?.isFeedbackProvided);
+    const pending = cases.filter((item) => item.status === "Pending");
 
     if (!searchText) {
       setFilteredCases(pending);
@@ -78,6 +78,7 @@ export default function Inquirylist() {
 
       const resData = await response.json();
       const casesData = Array.isArray(resData.data) ? resData.data : [];
+      console.log("casedata", casesData);
 
       if (resData.pagination) {
         setHasMore(

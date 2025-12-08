@@ -9,38 +9,43 @@ import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import baseurl  from "../../services/config";
 import AntDesign from "@expo/vector-icons/AntDesign";
-export default function Herosection() {
+export default function Herosection({ refreshing }) {
   const [stats, setStats] = useState({ active: 0, approved: 0, pendings: 0 });
+const fetchStats = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) throw new Error("Token not found");
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        if (!token) throw new Error("Token not found");
+    const response = await fetch(`${baseurl}/api/dashboard/inqiry-stats`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-        const response = await fetch(`${baseurl}/api/dashboard/inqiry-stats`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    if (!response.ok) throw new Error("Failed to fetch stats");
 
-        if (!response.ok) throw new Error("Failed to fetch stats");
+    const data = await response.json();
+    if (data.success && data.data) {
+      setStats({
+        active: data.data.totalInquiry,
+        approved: data.data.complete,
+        pendings: data.data.pending,
+      });
+    }
+  } catch (err) {
+    console.log("Error fetching stats:", err);
+  }
+};
 
+// Initial load
+useEffect(() => {
+  fetchStats();
+}, []);
 
-        const data = await response.json();
-        if (data.success && data) {
-          setStats({
-            active: data.data.totalInquiry,
-            approved: data.data.complete,
-            pendings: data.data.pending,
-          });
-        }
-      } catch (err) {
-        console.log("Error fetching stats:", err);
-      }
-    };
-
+// Refresh when pull-to-refresh triggers
+useEffect(() => {
+  if (refreshing) {
     fetchStats();
-  }, []);
-
+  }
+}, [refreshing]);
   return (
     <View style={styles.container}>
       <View style={styles.topCard}>

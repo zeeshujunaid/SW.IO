@@ -2,19 +2,19 @@
   "expo": {
     "name": "SW-IO",
     "slug": "SW-IO",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "portrait",
-    "icon": "./assets/images/SW-Inquiry.png",
+    "icon": "./assets/images/swioicon.jpg",
     "scheme": "swio",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/images/SW-Inquiry.png"
+      "icon": "./assets/images/swioicon.jpg"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/SW-Inquiry.png",
+        "foregroundImage": "./assets/images/swioicon.jpg",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -23,14 +23,14 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/SW-Inquiry.png"
+      "favicon": "./assets/images/swioicon.jpg"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/SW-Inquiry.png",
+          "image": "./assets/images/swioicon.jpg",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
